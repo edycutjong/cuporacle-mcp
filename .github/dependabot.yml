@@ -1,24 +1,20 @@
 version: 2
 updates:
-  # npm dependencies (@modelcontextprotocol/sdk, @injectivelabs/x402, viem, zod, tooling).
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+      interval: "monthly"
+    open-pull-requests-limit: 5
     groups:
-      # Batch low-risk dev/type/tooling bumps into one PR to cut noise.
+      production-dependencies:
+        dependency-type: "production"
       dev-dependencies:
         dependency-type: "development"
-    labels:
-      - "dependencies"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
-  # Keep the GitHub Actions in ci.yml / codeql.yml current.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "github-actions"
+      interval: "monthly"

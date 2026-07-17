@@ -20,7 +20,18 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
+      - name: Skip if version already on the registry
+        id: guard
+        run: |
+          V=$(node -p "require('./package.json').version")
+          if npm view "cuporacle-mcp@$V" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "cuporacle-mcp@$V already published — nothing to do"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish
+        if: steps.guard.outputs.skip != 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
