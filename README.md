@@ -34,6 +34,17 @@
 
 <p align="center">📊 <strong><a href="https://cuporacle.edycu.dev/pitch/">Pitch deck</a></strong> (interactive — arrow keys · press <kbd>P</kbd> to print) · 🌐 <a href="https://cuporacle.edycu.dev/">Live site</a></p>
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/05_edge.png" alt="wc_edge parses a real HTTP 402 quote and signs the EIP-3009 USDC authorization locally"/><br/><sub><b><code>wc_edge</code>, the showpiece</b> — parses a real 402, signs the EIP-3009 USDC authorization itself</sub></td>
+    <td width="50%"><img src="docs/screenshots/06_cap.png" alt="The session spend cap refusing a call — SPEND_CAP_HIT"/><br/><sub><b>Spend cap enforced</b> — the agent refuses to overspend (<code>SPEND_CAP_HIT</code>)</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/03_fixtures.png" alt="Live World Cup fixtures over stdio MCP"/><br/><sub><b>Live fixtures over MCP</b> — real World Cup data, free tools</sub></td>
+    <td width="50%"><img src="docs/screenshots/02_install.png" alt="One-line install into Claude Code"/><br/><sub><b>One-line install</b> — <code>claude mcp add cuporacle -- npx -y cuporacle-mcp</code></sub></td>
+  </tr>
+</table>
+
 ```bash
 # Claude Code — the 4 free data tools work with just two free API keys
 claude mcp add cuporacle -- npx -y cuporacle-mcp
