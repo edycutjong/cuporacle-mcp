@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="CupOracle — MCP braces around a football pentagon oracle eye with a gold receipt spark">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--bg-base, #070B14)"/>
+      <stop offset="0.55" stop-color="#0A0F1E"/>
+      <stop offset="1" stop-color="#0B0716"/>
+    </linearGradient>
+    <linearGradient id="braceL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--primary, #00E5FF)"/>
+      <stop offset="1" stop-color="var(--accent, #8B5CF6)"/>
+    </linearGradient>
+    <linearGradient id="braceR" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="var(--primary, #00E5FF)"/>
+      <stop offset="1" stop-color="var(--accent, #8B5CF6)"/>
+    </linearGradient>
+    <linearGradient id="penta" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7FF0FF"/>
+      <stop offset="0.55" stop-color="var(--primary, #00E5FF)"/>
+      <stop offset="1" stop-color="var(--accent, #8B5CF6)"/>
+    </linearGradient>
+    <linearGradient id="strip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#00E5FF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="badge"><rect x="24" y="24" width="464" height="464" rx="112"/></clipPath>
+  </defs>
+
+  <!-- badge -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bg)"/>
+  <g clip-path="url(#badge)">
+    <g transform="rotate(-35 256 256)">
+      <rect x="-120" y="128" width="760" height="3" fill="url(#strip)"/>
+      <rect x="-120" y="206" width="760" height="2" fill="url(#strip)" opacity="0.55"/>
+      <rect x="-120" y="382" width="760" height="3" fill="url(#strip)" opacity="0.7"/>
+    </g>
+    <!-- faint json-rpc braces texture -->
+    <g fill="#00E5FF" opacity="0.06" font-family="ui-monospace, Menlo, monospace" font-weight="700">
+      <text x="70" y="120" font-size="44">{"</text>
+      <text x="392" y="440" font-size="44">"}</text>
+    </g>
+    <g fill="#eafcff">
+      <circle cx="110" cy="98" r="2.4" opacity="0.8"/>
+      <circle cx="410" cy="120" r="1.8" opacity="0.6"/>
+      <circle cx="368" cy="72" r="1.5" opacity="0.5"/>
+      <circle cx="94" cy="188" r="1.5" opacity="0.45"/>
+    </g>
+  </g>
+
+  <!-- orbital oracle ring -->
+  <circle cx="256" cy="266" r="104" fill="none" stroke="var(--accent, #8B5CF6)" stroke-width="3.5" stroke-dasharray="10 14" opacity="0.65"/>
+
+  <!-- MCP braces -->
+  <g fill="none" stroke-width="20" stroke-linecap="round" filter="url(#glow)">
+    <path d="M172 168 Q136 168 136 204 L136 236 Q136 266 108 266 Q136 266 136 296 L136 328 Q136 364 172 364" stroke="url(#braceL)"/>
+    <path d="M340 168 Q376 168 376 204 L376 236 Q376 266 404 266 Q376 266 376 296 L376 328 Q376 364 340 364" stroke="url(#braceR)"/>
+  </g>
+
+  <!-- football pentagon (oracle pupil) -->
+  <g filter="url(#glow)">
+    <path d="M256 202 L316.9 246.2 L293.6 317.8 L218.4 317.8 L195.1 246.2 Z" fill="url(#penta)" stroke="#031018" stroke-width="4" stroke-linejoin="round"/>
+    <!-- seam lines -->
+    <g stroke="#031018" stroke-width="4" opacity="0.75">
+      <line x1="256" y1="202" x2="256" y2="266"/>
+      <line x1="316.9" y1="246.2" x2="256" y2="266"/>
+      <line x1="293.6" y1="317.8" x2="256" y2="266"/>
+      <line x1="218.4" y1="317.8" x2="256" y2="266"/>
+      <line x1="195.1" y1="246.2" x2="256" y2="266"/>
+    </g>
+  </g>
+
+  <!-- gold receipt spark -->
+  <g filter="url(#glow)">
+    <circle cx="352" cy="182" r="16" fill="#FFB300"/>
+    <path d="M352 158 L357 175 L374 182 L357 189 L352 206 L347 189 L330 182 L347 175 Z" fill="#FFD166"/>
+  </g>
+</svg>

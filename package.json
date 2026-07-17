@@ -1,0 +1,82 @@
+{
+  "name": "cuporacle-mcp",
+  "version": "1.0.0",
+  "description": "World Cup MCP server: fixtures, live scores, odds, and an agent that pays x402 itself for a vetted edge on Injective — then cites the receipt.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "injective",
+    "x402",
+    "world-cup",
+    "football",
+    "soccer",
+    "agent",
+    "usdc",
+    "cctp"
+  ],
+  "license": "MIT",
+  "author": "edycu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edycutjong/cuporacle-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edycutjong/cuporacle-mcp/issues"
+  },
+  "homepage": "https://github.com/edycutjong/cuporacle-mcp#readme",
+  "type": "module",
+  "bin": {
+    "cuporacle-mcp": "dist/bin/cuporacle-mcp.js"
+  },
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
+  "files": [
+    "dist",
+    "skills",
+    "README.md",
+    "ARCHITECTURE.md",
+    "DEMO.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/bin/cuporacle-mcp.js",
+    "smoke": "tsx scripts/smoke.ts",
+    "bench": "tsx scripts/bench.ts",
+    "snapshot": "tsx scripts/snapshot.ts",
+    "paid-call-smoke": "tsx scripts/paid-call-smoke.ts",
+    "init": "tsx bin/cuporacle-mcp.ts init",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "audit": "npm audit --audit-level=high",
+    "ci": "npm run typecheck && npm test && npm run build && npm run smoke",
+    "inspector": "npm run build && npx -y @modelcontextprotocol/inspector --cli node dist/bin/cuporacle-mcp.js --method tools/list && npx -y @modelcontextprotocol/inspector --cli node dist/bin/cuporacle-mcp.js --method resources/list && npx -y @modelcontextprotocol/inspector --cli node dist/bin/cuporacle-mcp.js --method prompts/list"
+  },
+  "dependencies": {
+    "@injectivelabs/x402": "0.0.1",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "viem": "^2.55.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^3.2.7"
+  },
+  "overrides": {
+    "esbuild": ">=0.28.1"
+  }
+}

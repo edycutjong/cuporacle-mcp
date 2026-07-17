@@ -1,0 +1,26 @@
+{
+  "_comment": "RECORDED LineLock /api/edge 200 payload (delivered on the paid retry) + the PAYMENT-RESPONSE receipt that would ride the response headers. Contract per _BUILD_BRIEF.md. The receipt tx here is a PLACEHOLDER for shape tests only — never presented to a user as a real settlement (wc_edge only ever cites a receipt returned by a genuine paid call).",
+  "edge": {
+    "fixture": "France vs Spain",
+    "kickoff_utc": "2026-07-14T19:00:00Z",
+    "model_prob": { "home": 0.4675, "draw": 0.2585, "away": 0.274 },
+    "market_odds": { "home": 2.35, "draw": 3.4, "away": 3.05 },
+    "edge_pct": 9.86,
+    "ladder": [
+      { "tier": "value", "stake_pct": 1.0, "rationale": "Model edge on France (home) at 2.35 vs fair 2.14." },
+      { "tier": "conviction", "stake_pct": 2.0, "rationale": "CLV history: France home favorites beat closing line 61% (n=18)." },
+      { "tier": "max", "stake_pct": 3.0, "rationale": "Only if line drifts to 2.45+ pre-kickoff." }
+    ],
+    "similar_settled": [
+      { "fixture": "France vs Portugal (QF)", "edge_pct": 7.2, "result": "won", "clv": "+0.11" },
+      { "fixture": "Spain vs Germany (R16)", "edge_pct": 5.9, "result": "won", "clv": "+0.07" }
+    ],
+    "pick_hash": "0x9f2b1c7a4d5e6f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f701"
+  },
+  "payment_response_header": {
+    "success": true,
+    "transaction": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "network": "eip155:1776",
+    "payer": "0x95DdED219bD3d763A184eB4187056b9F238aAaA2"
+  }
+}

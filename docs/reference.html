@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>cuporacle-mcp — the World Cup MCP server</title>
+<meta name="description" content="One npx line adds World Cup awareness + autonomous x402 payments to any MCP harness. An agent that buys and proves its own alpha on Injective." />
+<style>
+  :root{
+    --primary:#00E5FF; --accent:#8B5CF6; --pink:#E91E8C;
+    --bg:#070B14; --panel:#0d1424; --panel-2:#111a2e;
+    --line:rgba(255,255,255,.08); --text:#e8eefc; --muted:#93a1c0; --gold:#F5C451;
+    --ok:#22C55E; --warn:#F59E0B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    background-image:
+      radial-gradient(900px 520px at 82% -5%, rgba(0,229,255,.12), transparent 60%),
+      radial-gradient(760px 520px at 8% 100%, rgba(139,92,246,.12), transparent 62%);
+    background-attachment:fixed;}
+  code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  a{color:var(--primary);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+  header{padding:64px 0 28px;text-align:center}
+  .badge{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--primary);border:1px solid var(--line);border-radius:999px;padding:5px 14px;margin-bottom:20px;
+    background:rgba(0,229,255,.06)}
+  h1{font-size:clamp(34px,6vw,58px);margin:.1em 0;letter-spacing:-.02em;
+    background:linear-gradient(100deg,#7FF0FF,#00E5FF 42%,#A78BFA);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{color:var(--muted);font-size:clamp(15px,2.4vw,19px);max-width:660px;margin:12px auto 26px}
+  .install{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .cmd{background:#05080f;border:1px solid var(--line);border-radius:12px;padding:14px 18px;
+    color:#cfe;box-shadow:0 0 40px rgba(0,229,255,.08)}
+  .cmd .p{color:var(--primary)}
+  button.copy{background:var(--primary);color:#04121a;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+  button.copy:hover{filter:brightness(1.08)}
+  .pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+  section{padding:34px 0;border-top:1px solid var(--line)}
+  h2{font-size:24px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 20px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);
+    border-radius:14px;padding:16px 16px 14px}
+  .card h3{margin:0 0 6px;font-size:15px;font-family:ui-monospace,monospace}
+  .card p{margin:0;color:var(--muted);font-size:13.5px}
+  .card .free{color:var(--primary)} .card .paid{color:var(--gold)}
+  .chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-bottom:9px}
+  .chip.free{background:rgba(0,229,255,.1);color:var(--primary);border:1px solid rgba(0,229,255,.25)}
+  .chip.paid{background:rgba(245,196,81,.12);color:var(--gold);border:1px solid rgba(245,196,81,.3)}
+  pre{background:#05080f;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13px}
+  .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:8px 14px;cursor:pointer;font-size:13px}
+  .tab.on{color:var(--primary);border-color:rgba(0,229,255,.4);background:rgba(0,229,255,.06)}
+  .flow{background:#05080f;border:1px solid var(--line);border-radius:14px;padding:18px 18px}
+  .flow .row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .flow .row:last-child{border-bottom:0}
+  .flow .n{flex:0 0 26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(139,92,246,.16);color:#c7b6ff;font-size:13px;font-weight:700}
+  .flow .n.gold{background:rgba(245,196,81,.16);color:var(--gold)}
+  .tone{color:var(--muted);font-size:13.5px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .tile b{display:block;font-size:22px;color:var(--primary)}
+  .tile span{color:var(--muted);font-size:12.5px}
+  .note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.28);border-radius:12px;padding:12px 14px;color:#ffdfa6;font-size:13.5px}
+  footer{padding:36px 0 60px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line)}
+  .kbd{font-family:ui-monospace,monospace;background:#05080f;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:#cfe}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="badge">MCP · x402 · Injective</div>
+  <h1>cuporacle-mcp</h1>
+  <p class="tag">The missing <b>World Cup MCP server</b>. One line gives any agent live fixtures, scores, and odds — plus a tool that <b>pays x402 itself</b>, under a spend cap, and cites the on-chain receipt.</p>
+  <div class="install">
+    <div class="cmd mono"><span class="p">claude mcp add</span> cuporacle -- npx -y cuporacle-mcp</div>
+    <button class="copy" onclick="navigator.clipboard.writeText('claude mcp add cuporacle -- npx -y cuporacle-mcp')">Copy</button>
+  </div>
+  <div class="pills">
+    <span class="pill">8 tools</span><span class="pill">2 resources</span><span class="pill">1 prompt</span>
+    <span class="pill">stdio</span><span class="pill">MIT</span><span class="pill">Inspector-conformant</span>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>The eight tools</h2>
+  <p class="sub">Four free data tools. One that spends ~5¢ of USDC to buy a vetted edge. Three for proof &amp; governance.</p>
+  <div class="grid">
+    <div class="card"><span class="chip free">free</span><h3>wc_fixtures</h3><p>Fixtures for a day or the next upcoming window.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>wc_live</h3><p>Live score, minute and status for a match.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>wc_odds</h3><p>Consensus h2h odds + de-vigged probabilities.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>wc_bracket</h3><p>Knockout bracket state, R16 → Final.</p></div>
+    <div class="card"><span class="chip paid">pays x402</span><h3>wc_edge</h3><p>CLV-audited edge + ladder. Pays itself, cites the receipt.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>receipt_verify</h3><p>Verify a receipt on Injective EVM.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>wallet_fund_guide</h3><p>CCTP runbook to fund the agent wallet.</p></div>
+    <div class="card"><span class="chip free">free</span><h3>wc_spend_ledger</h3><p>Auditable purchase history vs the cap.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>The paid edge, step by step</h2>
+  <p class="sub">An LLM buys and proves its own alpha inside one conversation.</p>
+  <div class="flow mono">
+    <div class="row"><div class="n">1</div><div><b>POST /api/edge</b> → <span class="tone">402 &#123; accepts: [&#123; network: eip155:1776, amount: 50000, asset: 0xa00C…235a, payTo &#125;] &#125;</span></div></div>
+    <div class="row"><div class="n">2</div><div>spend-cap gate <span class="tone">— per-call max · session cap · ask-human-above-cap</span></div></div>
+    <div class="row"><div class="n">3</div><div>sign EIP-3009 authorization <span class="tone">locally (viem, no broadcast)</span> → PAYMENT-SIGNATURE</div></div>
+    <div class="row"><div class="n gold">4</div><div>200 &#123; edge, ladder, pick_hash &#125; + <b style="color:var(--gold)">PAYMENT-RESPONSE &#123; transaction: 0x… &#125;</b></div></div>
+    <div class="row"><div class="n">5</div><div>agent cites <b>receipt_tx</b> → <b>receipt_verify(0x…)</b> <span class="tone">→ block time + amount on Injective</span></div></div>
+  </div>
+  <p class="note" style="margin-top:14px">Governance first: on the call that would breach the cap, <span class="kbd">SPEND_CAP_HIT</span> tells the agent to <b>ask the human</b> — it never raises its own cap. Every spend is visible in <span class="kbd">wc_spend_ledger</span>.</p>
+</section>
+
+<section class="wrap">
+  <h2>Add it to your harness</h2>
+  <div class="tabs">
+    <button class="tab on" data-t="cc">Claude Code</button>
+    <button class="tab" data-t="cd">Claude Desktop</button>
+    <button class="tab" data-t="cu">Cursor</button>
+  </div>
+<pre id="cc" class="cfg mono">claude mcp add cuporacle \
+  -e FOOTBALL_DATA_KEY=… -e ODDS_API_KEY=… \
+  -e CUPORACLE_PRIVATE_KEY=0x… -e CUPORACLE_MAX_SPEND=0.50 \
+  -- npx -y cuporacle-mcp</pre>
+<pre id="cd" class="cfg mono" hidden>{
+  "mcpServers": {
+    "cuporacle": {
+      "command": "npx",
+      "args": ["-y", "cuporacle-mcp"],
+      "env": {
+        "FOOTBALL_DATA_KEY": "…",
+        "ODDS_API_KEY": "…",
+        "CUPORACLE_PRIVATE_KEY": "0x…",
+        "CUPORACLE_MAX_SPEND": "0.50"
+      }
+    }
+  }
+}</pre>
+<pre id="cu" class="cfg mono" hidden>{
+  "mcpServers": {
+    "cuporacle": {
+      "command": "npx", "args": ["-y", "cuporacle-mcp"],
+      "env": { "FOOTBALL_DATA_KEY": "…", "ODDS_API_KEY": "…" }
+    }
+  }
+}</pre>
+  <p class="tone">Runs side by side with the <b>InjectiveLabs/mcp-server</b> — the Skill routes wallet funding to its <span class="kbd">cctp_mint</span> flow. Interop, not wrap.</p>
+</section>
+
+<section class="wrap">
+  <h2>Verify &amp; bench</h2>
+  <p class="sub">Free data cached 60s; <b>wc_edge</b> never cached (fresh pick, fresh receipt).</p>
+  <div class="tiles">
+    <div class="tile"><b>0.0ms</b><span>wc_fixtures cache hit (p50)</span></div>
+    <div class="tile"><b>~740ms</b><span>wc_fixtures cold miss</span></div>
+    <div class="tile"><b>1.6ms</b><span>wc_edge dry_run parse+sign (p50)</span></div>
+    <div class="tile"><b>63</b><span>vitest passing</span></div>
+    <div class="tile"><b>8·2·1</b><span>tools · resources · prompt</span></div>
+  </div>
+  <p class="note" style="margin-top:14px">To confirm a paid edge: paste its tx into <span class="kbd">receipt_verify</span> in your agent, or open it on <a href="https://blockscout.injective.network">blockscout.injective.network</a>. CupOracle never fabricates a receipt — if LineLock is down, <span class="kbd">wc_edge</span> degrades to free odds and says "no vetted edge available".</p>
+</section>
+
+<footer class="wrap">
+  <p><b>cuporacle-mcp</b> · MIT · Football data provided by the Football-Data.org API · Injective EVM eip155:1776</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.cfg').forEach(x=>x.hidden=true);
+    t.classList.add('on'); document.getElementById(t.dataset.t).hidden=false;
+  }));
+</script>
+</body>
+</html>

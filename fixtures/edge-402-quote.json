@@ -1,0 +1,23 @@
+{
+  "_comment": "RECORDED x402 402 quote from LineLock POST /api/edge. Shape = @injectivelabs/x402 PaymentRequired (validated by PaymentRequiredSchema in tests). Amount 50000 = 0.05 USDC (6dp). Used to build+test wc_edge's client without a live upstream or funds. Real wiring = a one-line LINELOCK_URL swap.",
+  "x402Version": 2,
+  "error": "Payment required: vetted CLV-audited edge for this fixture.",
+  "resource": {
+    "url": "https://linelock.edycu.dev/api/edge",
+    "description": "CLV-audited edge + conviction ladder for one World Cup fixture.",
+    "mimeType": "application/json",
+    "serviceName": "LineLock",
+    "tags": ["world-cup", "edge", "clv"]
+  },
+  "accepts": [
+    {
+      "scheme": "exact",
+      "network": "eip155:1776",
+      "amount": "50000",
+      "asset": "0xa00C59fF5a080D2b954d0c75e46E22a0c371235a",
+      "payTo": "0x45078eD96C2bB171009A47a57aF5C085Bf4fD0e3",
+      "maxTimeoutSeconds": 60,
+      "extra": { "version": "2" }
+    }
+  ]
+}

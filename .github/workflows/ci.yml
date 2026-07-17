@@ -1,0 +1,172 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: # manual trigger for the provenance publish job
+
+# Cancel superseded runs for the same branch / PR (saves CI minutes).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# This is a stdio MCP **library** (npm package), not a web app — so the pipeline
+# swaps the usual browser E2E / Lighthouse stages for the two proofs that
+# actually matter here: a cold-start `npm run smoke` over real stdio and the
+# official MCP Inspector protocol-conformance check against the BUILT artifact.
+#
+#   Stage 1 Quality ─┐
+#                    ├─(parallel)─▶ Stage 3 Build ─▶ Stage 4 MCP Conformance ─▶ Stage 5 Publish-readiness
+#   Stage 2 Security ┘
+
+jobs:
+  # ── STAGE 1 · Quality (parallel with Stage 2) ────────────────────────────
+  quality:
+    name: "Stage 1 · Quality (node ${{ matrix.node }})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Full matrix on main push, single Node on PRs (saves ~4 min per PR).
+        node: ${{ github.event_name == 'push' && fromJSON('[20, 22, 24]') || fromJSON('[20]') }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - name: Type check (tsc --noEmit)
+        run: npm run typecheck
+      - name: Unit tests (vitest)
+        run: npm test
+
+  # ── STAGE 2 · Security (parallel with Stage 1) ───────────────────────────
+  secret-scan:
+    name: "Stage 2 · Secret Scanning"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history so TruffleHog can scan every commit
+      - name: TruffleHog secret scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+  dependency-audit:
+    name: "Stage 2 · Dependency & License Audit"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: npm audit (high + critical)
+        run: npm audit --audit-level=high
+        continue-on-error: true # advisory — don't block on transitive deps
+      - name: License compliance (no GPL/AGPL in prod deps)
+        run: npx --yes license-checker --production --failOn "GPL-3.0;AGPL-3.0" --summary
+        continue-on-error: true
+
+  # ── STAGE 3 · Build Verification ─────────────────────────────────────────
+  build:
+    name: "Stage 3 · Build (tsup) + dist smoke"
+    needs: [quality]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Build (tsup → dist/)
+        run: npm run build
+      - name: Verify dist artifact + bin shebang
+        run: |
+          test -f dist/bin/cuporacle-mcp.js || { echo "::error::dist/bin/cuporacle-mcp.js missing"; exit 1; }
+          test -f dist/server.js || { echo "::error::dist/server.js missing"; exit 1; }
+          head -1 dist/bin/cuporacle-mcp.js | grep -q '^#!/usr/bin/env node' || echo "::warning::bin shebang not found"
+          echo "✅ dist/ built and shipping bin present"
+      - name: Smoke the BUILT artifact over stdio (no secrets → labeled snapshot)
+        run: SMOKE_BIN=dist npm run smoke
+        env:
+          # No API keys in CI: the free data tools fall back to the committed,
+          # clearly-labeled [snapshot] fixture, so smoke stays deterministic.
+          FOOTBALL_DATA_KEY: ""
+          ODDS_API_KEY: ""
+
+  # ── STAGE 4 · MCP Conformance (this project's "E2E" — NO Playwright) ──────
+  mcp-conformance:
+    name: "Stage 4 · MCP Conformance (smoke + Inspector)"
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Cold-start smoke over stdio (source)
+        run: npm run smoke
+        env:
+          FOOTBALL_DATA_KEY: ""
+          ODDS_API_KEY: ""
+      - name: Official MCP Inspector conformance (8 tools / 2 resources / 1 prompt)
+        run: |
+          npx -y @modelcontextprotocol/inspector@0.22.0 --cli node dist/bin/cuporacle-mcp.js --method tools/list > tools.json
+          npx -y @modelcontextprotocol/inspector@0.22.0 --cli node dist/bin/cuporacle-mcp.js --method resources/list > resources.json
+          npx -y @modelcontextprotocol/inspector@0.22.0 --cli node dist/bin/cuporacle-mcp.js --method prompts/list > prompts.json
+          node -e "const t=require('./tools.json').tools; if(t.length!==8) throw new Error('expected 8 tools, got '+t.length); console.log('tools OK', t.length)"
+          node -e "const r=require('./resources.json').resources; if(r.length!==2) throw new Error('expected 2 resources, got '+r.length); console.log('resources OK', r.length)"
+          node -e "const p=require('./prompts.json').prompts; if(p.length!==1) throw new Error('expected 1 prompt, got '+p.length); console.log('prompts OK', p.length)"
+
+  # ── STAGE 5 · Publish-readiness gate (NEVER publishes) ───────────────────
+  publish-readiness:
+    name: "Stage 5 · npm Publish Readiness"
+    needs: [build, mcp-conformance, secret-scan, dependency-audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Pack the publishable tarball (dry-run — no registry write)
+        run: npm pack --dry-run
+      - name: Verify publish would succeed (dry-run only)
+        run: npm publish --dry-run --access public
+        continue-on-error: true # informational; a token is only needed for a real publish
+      - name: Summary
+        run: echo "✅ Package is publish-ready (dry-run only — nothing published)."
+
+  # Publish is a manual, opt-in job. Run it from the Actions tab on a tagged
+  # release. It publishes with npm provenance (OIDC) so the registry page shows
+  # the verified-build badge. Requires NPM_TOKEN with publish rights.
+  publish:
+    name: publish (manual)
+    if: github.event_name == 'workflow_dispatch'
+    needs: [build, mcp-conformance]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for npm provenance
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

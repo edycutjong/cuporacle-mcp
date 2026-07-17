@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CupOracle — Pitch</title>
+<meta name="description" content="Pitch deck for cuporacle-mcp — the missing World Cup MCP server: live FIFA World Cup 2026 data as free tools, plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt.">
+<link rel="canonical" href="https://edycutjong.github.io/cuporacle-mcp/pitch/">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#070B14">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="CupOracle — Pitch">
+<meta property="og:description" content="The missing World Cup MCP server: live FIFA World Cup 2026 data as free tools, plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt.">
+<meta property="og:url" content="https://edycutjong.github.io/cuporacle-mcp/pitch/">
+<meta property="og:image" content="https://edycutjong.github.io/cuporacle-mcp/og-image.png">
+<meta property="og:image:alt" content="CupOracle — the missing World Cup MCP server: an agent asks, the tools fire, x402 pays, and the receipt lands on Injective.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CupOracle — Pitch">
+<meta name="twitter:description" content="The missing World Cup MCP server: live World Cup 2026 data free, plus wc_edge — an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt.">
+<meta name="twitter:image" content="https://edycutjong.github.io/cuporacle-mcp/og-image.png">
+<style>
+  :root{
+    --cy:#00E5FF; --cy-br:#7FF0FF; --cy-dp:#0891B2;
+    --vi:#8B5CF6; --vi-br:#A78BFA;
+    --gold:#FFB300; --gold-br:#FFD166;
+    --bg:#070B14; --bg2:#0a1120; --card:#0e1626; --line:#1d2a42;
+    --hi:#F1F7FF; --mid:#93A4C0; --low:#5b6b86;
+    --win:#22C55E; --warn:#F59E0B;
+    --fd:"Helvetica Neue", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono:ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-snap-type:y mandatory; scroll-behavior:smooth; background:var(--bg)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0; font-family:var(--fd); color:var(--hi); -webkit-font-smoothing:antialiased; background:
+    radial-gradient(1100px 760px at 82% -12%, rgba(0,229,255,.10), transparent 58%),
+    radial-gradient(900px 680px at 2% 112%, rgba(139,92,246,.12), transparent 55%), var(--bg)}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+  .slide{width:100vw; min-height:100vh; scroll-snap-align:start; display:grid; place-items:center; padding:4vh 5vw}
+  .inner{width:min(1180px,100%); aspect-ratio:16/9; background:linear-gradient(180deg,var(--bg2),#080e1a);
+    border:1px solid var(--line); border-radius:18px; padding:clamp(26px,4.4vw,64px);
+    display:flex; flex-direction:column; position:relative; overflow:hidden;
+    box-shadow:0 40px 120px -50px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03)}
+  .inner::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background:repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.012) 3px 4px)}
+  .strip{position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--cy),var(--vi))}
+
+  .eyebrow{font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--mid); font-weight:700; display:flex; gap:12px; align-items:center}
+  .eyebrow b{color:var(--cy); font-weight:800}
+  .num{margin-left:auto; color:var(--low); letter-spacing:.1em}
+  h1{font-size:clamp(40px,7vw,98px); line-height:.92; margin:0; font-weight:800; letter-spacing:-.03em; text-wrap:balance}
+  h2{font-size:clamp(26px,3.9vw,52px); line-height:1.02; margin:0; font-weight:800; letter-spacing:-.02em; text-wrap:balance}
+  .lede{font-size:clamp(16px,1.75vw,23px); color:var(--mid); line-height:1.5; max-width:62ch; margin:0}
+  .grad{background:linear-gradient(92deg,var(--cy-br),var(--vi-br)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  p{margin:0}
+  .push{margin-top:auto}
+  .row{display:flex; gap:14px; flex-wrap:wrap}
+  .col{display:flex; flex-direction:column; gap:14px}
+  .center{justify-content:center; text-align:center; align-items:center}
+  .big{font-size:clamp(20px,2.4vw,30px); font-weight:800; letter-spacing:-.01em; line-height:1.25; text-wrap:balance}
+  .muted{color:var(--mid)}
+
+  .chip{display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border:1px solid var(--line); border-radius:999px; background:#0b1322; font-size:13px}
+  .chip .k{color:var(--low); text-transform:uppercase; letter-spacing:.14em; font-size:10.5px; font-weight:700; font-family:var(--fd)}
+  .ok{color:var(--win); font-weight:700}
+
+  /* terminal / tool-call motif */
+  .term{width:100%; background:#060a12; border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:var(--mono); font-size:13.5px}
+  .term .bar{display:flex; align-items:center; gap:7px; padding:9px 13px; border-bottom:1px solid var(--line); background:#0a1120; color:var(--low); font-size:11.5px; letter-spacing:.06em}
+  .term .bar i{width:9px; height:9px; border-radius:50%; background:#243247; display:inline-block}
+  .term .body{padding:14px 16px; line-height:1.7}
+  .term .call{color:var(--cy-br)} .term .ret{color:var(--mid)} .term .rec{color:var(--gold-br)}
+  .term .cap{color:var(--vi-br)}
+
+  .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  .cards.four{grid-template-columns:repeat(4,1fr)} .cards.three{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:6px}
+  .card .h{font-weight:800; font-size:15.5px; letter-spacing:-.01em}
+  .card .d{color:var(--mid); font-size:13px; line-height:1.42}
+  .card .kx{font-family:var(--mono); font-size:11.5px; color:var(--cy-br)}
+  .tools{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%}
+  .tool{background:#0b1322; border:1px solid var(--line); border-radius:11px; padding:12px 13px}
+  .tool .n{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--cy-br)}
+  .tool .n.paid{color:var(--gold-br)}
+  .tool .g{font-size:11px; color:var(--low); text-transform:uppercase; letter-spacing:.1em; margin-top:3px}
+  .stat{font-family:var(--mono); font-size:clamp(26px,3.6vw,46px); font-weight:700; line-height:1; letter-spacing:-.02em}
+  a{color:var(--cy-br); text-decoration:none}
+
+  .nav{position:fixed; right:16px; bottom:16px; display:flex; gap:6px; z-index:10}
+  .dot{width:8px; height:8px; border-radius:50%; background:#22304a; border:0; padding:0; cursor:pointer}
+  .dot[aria-current="true"]{background:var(--cy); box-shadow:0 0 10px var(--cy)}
+  .hint{position:fixed; left:16px; bottom:14px; color:var(--low); font-size:11.5px; letter-spacing:.08em; z-index:10; font-family:var(--mono)}
+
+  @media (max-width:820px){ .inner{aspect-ratio:auto; min-height:88vh} .cards,.cards.four,.cards.three,.tools{grid-template-columns:1fr 1fr} h1{font-size:50px} }
+  @media print{
+    @page{size:1280px 720px; margin:0}
+    html,body{background:var(--bg)}
+    .nav,.hint{display:none}
+    .slide{width:1280px; height:720px; min-height:0; padding:22px; page-break-after:always; break-after:page; scroll-snap-align:none}
+    .inner{aspect-ratio:auto; height:100%; box-shadow:none}
+    .grad{background:none; -webkit-text-fill-color:#7FF0FF; color:#7FF0FF}
+    *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow"><b>Injective Global Cup</b> · MCP Server <span class="num">CupOracle · 01</span></div>
+  <div class="push"></div>
+  <h1>Cup<span class="grad">Oracle</span></h1>
+  <p class="big" style="margin-top:18px">The missing <span class="grad">World Cup MCP server</span>.</p>
+  <p class="lede" style="margin-top:16px">Your AI assistant doesn't know tonight's Semi-Final exists. Fixed with <b style="color:var(--hi)">one install</b>.</p>
+  <div class="push"></div>
+  <div class="row" style="align-items:center">
+    <span class="chip"><span class="k">stdio</span> <span class="mono">8 tools · 2 resources · 1 prompt</span></span>
+    <span class="chip"><span class="k">wc_edge</span> <span class="mono ok">pays x402 itself</span></span>
+    <span class="mono" style="margin-left:auto; color:var(--low); font-size:12.5px">MCP · x402 · CCTP · Agent Skills</span>
+  </div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">The problem <span class="num">02</span></div>
+  <h2 style="margin-top:20px">Agents are <span class="grad">football-blind</span>.</h2>
+  <p class="lede" style="margin-top:18px">Injective's own MCP server covers wallets, markets, CCTP, trading. But ask an agent <i>"should I care about tonight's match?"</i> and it hallucinates or scrapes. There is no installable, tool-schema'd World Cup layer — and no pattern for an agent <b style="color:var(--hi)">paying for premium data itself</b>.</p>
+  <div class="push"></div>
+  <div class="cards three">
+    <div class="card"><div class="h">No live capability</div><div class="d">No fixtures, no odds, no bracket — the biggest sports event on earth is invisible.</div></div>
+    <div class="card"><div class="h">No keys to hold</div><div class="d">Agents can't sign up for API keys or billing accounts. Paid data is out of reach.</div></div>
+    <div class="card"><div class="h">No accountability</div><div class="d">Nothing forces an answer to cite what it paid for or prove it.</div></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">The solution <span class="num">03</span></div>
+  <h2 style="margin-top:18px">One install → a paying, <span class="grad">receipt-carrying</span> analyst.</h2>
+  <div class="push"></div>
+  <div class="term">
+    <div class="bar"><i></i><i></i><i></i> &nbsp;claude · cuporacle-mcp (stdio)</div>
+    <div class="body">
+      <div class="call">▸ wc_fixtures()</div>
+      <div class="ret">&nbsp;&nbsp;← 537387 · 2026-07-14 19:00Z · SF · <b style="color:var(--hi)">France vs Spain</b></div>
+      <div class="call" style="margin-top:8px">▸ wc_edge({ matchId: 537387 })&nbsp;&nbsp;<span class="cap">// pays 0.05 USDC itself · cap 0.50</span></div>
+      <div class="ret">&nbsp;&nbsp;← edge <b style="color:var(--win)">+6.8%</b> · ladder [banker · ½ · ¼]</div>
+      <div class="rec">&nbsp;&nbsp;← receipt 0x7a3f…e91d ✓ cited</div>
+    </div>
+  </div>
+  <p class="lede" style="margin-top:18px">Free tools answer <i>what's on</i>. <b class="mono" style="color:var(--gold-br)">wc_edge</b> buys a CLV-audited edge for 5¢ via Injective x402 — spend-capped — and hands back the on-chain receipt. Judges verify every hash.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">The mechanic · <b>the depth</b> <span class="num">04</span></div>
+  <h2 style="margin-top:16px">A <span class="grad">responsible</span> autonomous payer.</h2>
+  <div class="cards three" style="margin-top:22px">
+    <div class="card"><div class="kx">CUPORACLE_MAX_SPEND</div><div class="h">Spend governance</div><div class="d">Per-session cap, per-call max, and a hard "ask the human above cap" rule. Not a hot wallet with vibes.</div></div>
+    <div class="card"><div class="kx">receipt_tx cited</div><div class="h">Auditable answers</div><div class="d">Every wc_edge answer carries its receipt — here's the alpha, here's what I paid, here's the proof.</div></div>
+    <div class="card"><div class="kx">INSUFFICIENT_USDC</div><div class="h">Failures teach</div><div class="d">Typed errors carry the fix inline — the CCTP funding runbook, or how to raise the cap.</div></div>
+  </div>
+  <div class="push"></div>
+  <div class="chip" style="align-self:flex-start"><span class="k">the buyer side</span> <span class="muted">The docs demo shows the x402 <i>seller</i>. CupOracle is the reference implementation of an agent that pays <b style="color:var(--hi)">on its own</b>.</span></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">Full protocol citizenship <span class="num">05</span></div>
+  <h2 style="margin-top:16px">8 tools · 2 resources · 1 prompt</h2>
+  <div class="push"></div>
+  <div class="tools">
+    <div class="tool"><div class="n">wc_fixtures</div><div class="g">free</div></div>
+    <div class="tool"><div class="n">wc_live</div><div class="g">free</div></div>
+    <div class="tool"><div class="n">wc_odds</div><div class="g">free</div></div>
+    <div class="tool"><div class="n">wc_bracket</div><div class="g">free</div></div>
+    <div class="tool"><div class="n paid">wc_edge</div><div class="g" style="color:var(--gold)">pays x402</div></div>
+    <div class="tool"><div class="n">receipt_verify</div><div class="g">free</div></div>
+    <div class="tool"><div class="n">wallet_fund_guide</div><div class="g">free</div></div>
+    <div class="tool"><div class="n">wc_spend_ledger</div><div class="g">free</div></div>
+  </div>
+  <div class="push"></div>
+  <p class="lede">Resources <span class="mono" style="color:var(--cy-br)">wc://bracket</span> · <span class="mono" style="color:var(--cy-br)">wc://ledger</span> and an <span class="mono" style="color:var(--vi-br)">analyze-match</span> prompt — the primitives most community servers skip. Enforced by the official MCP Inspector in CI.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">Why only Injective · <b>load-bearing</b> <span class="num">06</span></div>
+  <h2 style="margin-top:16px">Remove any layer → a scraper or a <span class="grad">billing page</span>.</h2>
+  <div class="cards four" style="margin-top:22px">
+    <div class="card"><div class="kx">MCP Server</div><div class="h">Publishes one</div><div class="d">cuporacle-mcp extends the InjectiveLabs pattern; interops with its balance/CCTP tools side-by-side.</div></div>
+    <div class="card"><div class="kx">x402</div><div class="h">Keyless pay</div><div class="d">Full autonomous client: 402 quote → USDC sig → facilitator → retry. No account to hold.</div></div>
+    <div class="card"><div class="kx">Agent Skills</div><div class="h">Judgment</div><div class="d">cuporacle skill: tool selection, spend policy, fund-if-broke runbook.</div></div>
+    <div class="card"><div class="kx">USDC CCTP</div><div class="h">Money mobility</div><div class="d">cctp_supported_chains → Iris → cctp_mint. Fund from any chain, inside the chat.</div></div>
+  </div>
+  <div class="push"></div>
+  <p class="lede">MCP for capability · x402 for keyless payment · a Skill for judgment · CCTP for money. <span class="muted">Remove any one and the magic — buy &amp; prove your own data in one conversation — is gone.</span></p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">Built &amp; independently verified <span class="num">07</span></div>
+  <h2 style="margin-top:16px">Installs live. <span class="grad">Speaks over stdio.</span></h2>
+  <div class="row" style="margin-top:22px; gap:26px">
+    <div class="col" style="flex:1"><div class="stat" style="color:var(--win)">63/63</div><div class="muted" style="font-size:13.5px">tests green · typecheck clean · CI on Node 20/22</div></div>
+    <div class="col" style="flex:1"><div class="stat" style="color:var(--cy-br)">8·2·1</div><div class="muted" style="font-size:13.5px">tools·resources·prompt enumerated by MCP Inspector over stdio</div></div>
+    <div class="col" style="flex:1"><div class="stat">npm</div><div class="muted" style="font-size:13.5px">publish-ready · provenance CI · 12-file pack, no secrets</div></div>
+  </div>
+  <div class="push"></div>
+  <div class="chip" style="align-self:flex-start; border-color:var(--gold)"><span class="k" style="color:var(--gold)">honesty</span> <span class="muted">Live <span class="mono">wc_fixtures</span> returned the real France v Spain SF. Real paid <span class="mono">wc_edge</span> is funds-gated — degrades to free odds, never fabricates a receipt.</span></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <div class="strip"></div>
+  <div class="eyebrow">Why it wins <span class="num">08</span></div>
+  <h2 style="margin-top:18px">Not the tutorial. A <span class="grad">complete server</span>.</h2>
+  <p class="lede" style="margin-top:18px">Three layers the docs example never touches: it <b style="color:var(--hi)">publishes</b> a full MCP server (not just uses one), implements x402 from the <b style="color:var(--hi)">buyer</b> side, and ships a <b style="color:var(--hi)">spend-governance</b> layer. Free data stays free; only the vetted edge costs.</p>
+  <div class="push"></div>
+  <p class="big">The deliverable <span class="grad">is</span> the toolkit — npm-published, MIT, forkable, with an "add your own sport" template. Beat my model, on the record.</p>
+</div></section>
+
+<section class="slide"><div class="inner center" style="justify-content:center">
+  <div class="strip"></div>
+  <h2 style="font-size:clamp(30px,5vw,64px)">One install.<br><span class="grad">Your agent speaks football.</span></h2>
+  <div class="term" style="max-width:640px; margin-top:30px; text-align:left">
+    <div class="bar"><i></i><i></i><i></i> &nbsp;terminal</div>
+    <div class="body"><span class="call">$ claude mcp add cuporacle -- npx cuporacle-mcp</span></div>
+  </div>
+  <div class="row center" style="margin-top:24px; gap:12px">
+    <span class="chip"><span class="k">repo</span> <span class="mono">github.com/edycutjong/cuporacle-mcp</span></span>
+    <span class="chip"><span class="k">docs</span> <span class="mono">cuporacle.edycu.dev</span></span>
+  </div>
+  <p class="mono" style="margin-top:22px; color:var(--low); letter-spacing:.12em; font-size:13px">MCP SERVER &nbsp;·&nbsp; x402 &nbsp;·&nbsp; USDC CCTP &nbsp;·&nbsp; AGENT SKILLS</p>
+  <p class="eyebrow" style="margin-top:8px">@NinjaLabsHQ · #InjectiveGlobalCupHackathon</p>
+</div></section>
+
+<div class="nav" id="nav" aria-hidden="true"></div>
+<div class="hint">↑ ↓ / space to navigate · P to print</div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')], nav=document.getElementById('nav');
+  slides.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.setAttribute('aria-label','Slide '+(i+1));b.onclick=()=>s.scrollIntoView();nav.appendChild(b);});
+  const dots=[...nav.children];
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=slides.indexOf(e.target);dots.forEach((d,j)=>d.setAttribute('aria-current',j===i))}}),{threshold:.55});
+  slides.forEach(s=>io.observe(s));
+  let i=0; const go=n=>{i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView()};
+  addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}else if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}else if(e.key==='p'||e.key==='P'){window.print()}});
+</script>
+
+</body>
+</html>

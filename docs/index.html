@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>cuporacle-mcp — the missing World Cup MCP server</title>
+<meta name="description" content="A published MCP server for FIFA World Cup 2026 — live fixtures, scores, odds and the bracket as free tools, plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt." />
+<link rel="canonical" href="https://edycutjong.github.io/cuporacle-mcp/" />
+<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#070B14" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="cuporacle-mcp — the missing World Cup MCP server" />
+<meta property="og:description" content="Live FIFA World Cup 2026 fixtures, scores, odds and bracket as free MCP tools — plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt." />
+<meta property="og:url" content="https://edycutjong.github.io/cuporacle-mcp/" />
+<meta property="og:image" content="https://edycutjong.github.io/cuporacle-mcp/og-image.png" />
+<meta property="og:image:alt" content="CupOracle — the missing World Cup MCP server: an agent asks, the tools fire, x402 pays, and the receipt lands on Injective." />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="cuporacle-mcp — the missing World Cup MCP server" />
+<meta name="twitter:description" content="Live FIFA World Cup 2026 data as free MCP tools — plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt." />
+<meta name="twitter:image" content="https://edycutjong.github.io/cuporacle-mcp/og-image.png" />
+
+<style>
+  :root{
+    --pink:#E91E8C; --pink-br:#FF5FB4;
+    --vi:#8B5CF6; --vi-br:#A78BFA;
+    --cy:#00E5FF; --cy-br:#7FF0FF;
+    --gold:#F5C451;
+    --bg:#070B14; --bg2:#0a1120; --card:#0e1626; --card2:#111a2e;
+    --line:rgba(255,255,255,.09);
+    --hi:#F1F7FF; --mid:#93a1c0; --low:#5b6b86;
+    --ok:#22C55E;
+    --fd:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0; color:var(--hi); font-family:var(--fd); line-height:1.6; -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1000px 620px at 82% -8%, rgba(233,30,140,.13), transparent 60%),
+      radial-gradient(820px 560px at 6% 104%, rgba(139,92,246,.14), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;}
+  a{color:var(--cy-br); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+  .mono{font-family:var(--mono)}
+  .grad{background:linear-gradient(92deg, var(--pink-br), var(--vi-br)); -webkit-background-clip:text; background-clip:text; color:transparent}
+
+  /* hero */
+  header.hero{text-align:center; padding:72px 24px 40px}
+  header.hero img.logo{width:120px; height:120px}
+  header.hero h1{font-size:clamp(40px,7vw,84px); line-height:.95; margin:20px 0 0; font-weight:800; letter-spacing:-.03em; font-family:var(--mono)}
+  header.hero .tag{font-size:clamp(16px,2.1vw,22px); color:var(--mid); max-width:56ch; margin:16px auto 0; line-height:1.45}
+  .pills{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:24px}
+  .pill{display:inline-flex; align-items:center; gap:8px; padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.03); font-size:13px; color:var(--mid)}
+  .pill b{color:var(--hi); font-weight:700}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 10px var(--ok)}
+
+  /* CTA row */
+  .cta{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:30px}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:12px; font-weight:700; font-size:15px; border:1px solid var(--line); color:var(--hi); transition:transform .12s ease, box-shadow .12s ease}
+  .btn:hover{transform:translateY(-2px); text-decoration:none}
+  .btn.primary{background:linear-gradient(92deg, var(--pink), var(--vi)); border-color:transparent; box-shadow:0 12px 32px -14px rgba(233,30,140,.7)}
+  .btn.ghost{background:rgba(255,255,255,.03)}
+
+  section{padding:44px 0}
+  h2.sec{font-size:clamp(24px,3.4vw,36px); font-weight:800; letter-spacing:-.02em; margin:0 0 8px}
+  .lede{color:var(--mid); font-size:clamp(16px,1.8vw,19px); max-width:66ch; line-height:1.6; margin:0}
+
+  /* feature cards */
+  .cards{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:30px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:8px}
+  .card .ic{font-size:24px}
+  .card h3{margin:2px 0 0; font-size:16px; font-weight:800; letter-spacing:-.01em}
+  .card p{margin:0; color:var(--mid); font-size:13.5px; line-height:1.5}
+  .card .k{font-family:var(--mono); font-size:11.5px; color:var(--pink-br); margin-top:2px}
+
+  /* install block */
+  .install{background:#060a12; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-top:24px; max-width:720px}
+  .install .bar{display:flex; align-items:center; gap:7px; padding:11px 15px; border-bottom:1px solid var(--line); background:#0a1120; color:var(--low); font-size:11.5px; letter-spacing:.06em; font-family:var(--mono)}
+  .install .bar i{width:9px; height:9px; border-radius:50%; background:#243247; display:inline-block}
+  .install pre{margin:0; padding:18px 18px; overflow-x:auto; font-family:var(--mono); font-size:14px; line-height:1.7; color:var(--hi)}
+  .install pre .c{color:var(--low)}
+  .install pre .p{color:var(--pink-br)}
+  .note{color:var(--low); font-size:13px; margin-top:12px; max-width:720px}
+
+  /* badges */
+  .badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px}
+  .badge{display:inline-flex; align-items:center; padding:6px 12px; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,.03); font-size:12.5px; color:var(--mid); font-family:var(--mono)}
+
+  footer{border-top:1px solid var(--line); margin-top:40px; padding:30px 24px 48px; text-align:center; color:var(--low); font-size:13.5px}
+  footer a{color:var(--mid)}
+
+  @media (max-width:860px){ .cards{grid-template-columns:1fr 1fr} }
+  @media (max-width:520px){ .cards{grid-template-columns:1fr} header.hero{padding-top:52px} }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="logo" src="./icon.svg" alt="CupOracle logo" width="120" height="120" />
+    <h1>cuporacle-mcp</h1>
+    <p class="tag">The missing World Cup MCP server — <span class="grad">live data free, premium alpha bought and proven by the agent itself.</span></p>
+    <div class="pills">
+      <span class="pill"><span class="dot"></span> <b>Published</b> on npm</span>
+      <span class="pill"><b>8</b> tools · <b>2</b> resources · <b>1</b> prompt</span>
+      <span class="pill"><b>63</b> tests passing</span>
+      <span class="pill">Injective EVM · <b>eip155:1776</b></span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="./pitch/">Pitch deck</a>
+      <a class="btn ghost" href="https://github.com/edycutjong/cuporacle-mcp">GitHub</a>
+      <a class="btn ghost" href="https://www.npmjs.com/package/cuporacle-mcp">npm</a>
+      <a class="btn ghost" href="./reference.html">Reference docs</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">What it is</h2>
+    <p class="lede">
+      Your AI assistant is football-blind during the biggest event on earth — it can't see tonight's
+      World Cup match, has no odds, and has no way to pay for premium data itself. <b>CupOracle</b> is a
+      published <a href="https://modelcontextprotocol.io">Model Context Protocol</a> server that fixes that:
+      live FIFA World Cup 2026 fixtures, scores, consensus odds and the knockout bracket as <b>free</b> tools —
+      plus <span class="mono" style="color:var(--pink-br)">wc_edge</span>, a reference agent that pays 0.05 USDC via
+      Injective x402 <em>by itself</em> (under a spend cap) and cites the on-chain receipt. It runs side by side
+      with the Injective MCP server over stdio.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🧰</div>
+        <h3>8 MCP tools</h3>
+        <p>Fixtures, live scores, odds, bracket and more — served over stdio, MCP-Inspector-conformant in CI.</p>
+        <div class="k">2 resources · 1 prompt</div>
+      </div>
+      <div class="card">
+        <div class="ic">⚽</div>
+        <h3>Free live data</h3>
+        <p>Real FIFA World Cup 2026 fixtures, scores, consensus odds and the knockout bracket — no wallet, no funds.</p>
+        <div class="k">wc_fixtures · wc_live · wc_odds · wc_bracket</div>
+      </div>
+      <div class="card">
+        <div class="ic">🤖</div>
+        <h3>wc_edge · autonomous x402</h3>
+        <p>An agent that buys its own premium alpha — pays 0.05 USDC keylessly via Injective x402, under a spend cap.</p>
+        <div class="k">EIP-3009 · spend-cap enforced</div>
+      </div>
+      <div class="card">
+        <div class="ic">🧾</div>
+        <h3>receipt_verify on Injective</h3>
+        <p>Every paid call cites the on-chain receipt — the agent proves what it bought, never invents an edge.</p>
+        <div class="k">eip155:1776 · verifiable</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">Install</h2>
+    <p class="lede">Add it to Claude Code with one line — the four free data tools work with just two free API keys.</p>
+    <div class="install">
+      <div class="bar"><i></i><i></i><i></i> &nbsp;bash</div>
+      <pre><span class="c"># Claude Code — the 4 free data tools work with just two free API keys</span>
+claude mcp add cuporacle -- npx -y <span class="p">cuporacle-mcp</span></pre>
+    </div>
+    <p class="note">Runs side by side with the Injective MCP server. See the
+      <a href="./reference.html">reference docs</a> for the full tool surface and the
+      <a href="./pitch/">pitch deck</a> for the story.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">Built with</h2>
+    <div class="badges">
+      <span class="badge">Node.js ≥ 20</span>
+      <span class="badge">TypeScript</span>
+      <span class="badge">Model Context Protocol</span>
+      <span class="badge">Injective EVM · eip155:1776</span>
+      <span class="badge">x402 · autonomous pay</span>
+      <span class="badge">tsup · ESM</span>
+      <span class="badge">Vitest · 63 passing</span>
+      <span class="badge">MIT</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <a href="./pitch/">Pitch deck</a> ·
+      <a href="https://github.com/edycutjong/cuporacle-mcp">GitHub</a> ·
+      <a href="https://www.npmjs.com/package/cuporacle-mcp">npm</a> ·
+      <a href="./reference.html">Reference docs</a>
+    </p>
+    <p style="margin-top:10px">Built for HackQuest · Injective Global Cup 2026 · MIT licensed</p>
+  </div>
+</footer>
+
+</body>
+</html>

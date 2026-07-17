@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="CupOracle animated mark — MCP braces draw in around a football pentagon; a gold receipt spark pops">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070B14"/><stop offset="0.55" stop-color="#0A0F1E"/><stop offset="1" stop-color="#0B0716"/>
+    </linearGradient>
+    <linearGradient id="braceL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00E5FF"/><stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="braceR" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#00E5FF"/><stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="penta" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7FF0FF"/><stop offset="0.55" stop-color="#00E5FF"/><stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="strip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0"/><stop offset="0.5" stop-color="#00E5FF" stop-opacity="0.45"/><stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="spark" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#FFD166"/><stop offset="1" stop-color="#FFB300" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="15"/></filter>
+    <clipPath id="badge"><rect x="24" y="24" width="464" height="464" rx="112"/></clipPath>
+    <style>
+      @keyframes breathe { 0%,100%{opacity:.24} 82%{opacity:.6} }
+      @keyframes twinkle { 0%,100%{opacity:.25} 50%{opacity:.9} }
+      @keyframes stripdrift { 0%,100%{opacity:.35} 50%{opacity:.8} }
+      @keyframes pupil { 0%,26%{transform:scale(.0) rotate(-72deg)} 40%{transform:scale(1.12) rotate(6deg)} 46%,100%{transform:scale(1) rotate(0deg)} }
+      .breath{animation:breathe 6s ease-in-out infinite}
+      .tw{animation:twinkle 6s ease-in-out infinite}
+      .strip{animation:stripdrift 6s ease-in-out infinite}
+      .pupil{animation:pupil 6s cubic-bezier(.2,1.4,.4,1) infinite;transform-box:fill-box;transform-origin:center}
+      @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+    </style>
+  </defs>
+
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bg)"/>
+  <g clip-path="url(#badge)">
+    <g transform="rotate(-35 256 256)">
+      <rect class="strip" x="-120" y="128" width="760" height="3" fill="url(#strip)"/>
+      <rect class="strip" x="-120" y="206" width="760" height="2" fill="url(#strip)" style="animation-delay:-2s"/>
+      <rect class="strip" x="-120" y="382" width="760" height="3" fill="url(#strip)" style="animation-delay:-4s"/>
+    </g>
+    <g fill="#00E5FF" opacity="0.06" font-family="ui-monospace, Menlo, monospace" font-weight="700">
+      <text x="70" y="120" font-size="44">{"</text>
+      <text x="392" y="440" font-size="44">"}</text>
+    </g>
+    <g fill="#eafcff">
+      <circle class="tw" cx="110" cy="98" r="2.4"/><circle class="tw" cx="410" cy="120" r="1.8" style="animation-delay:-2s"/>
+      <circle class="tw" cx="368" cy="72" r="1.5" style="animation-delay:-1s"/><circle class="tw" cx="94" cy="188" r="1.5" style="animation-delay:-3s"/>
+    </g>
+  </g>
+
+  <!-- glow-breath duplicate -->
+  <g class="breath" filter="url(#soft)">
+    <path d="M256 202 L316.9 246.2 L293.6 317.8 L218.4 317.8 L195.1 246.2 Z" fill="#00E5FF"/>
+  </g>
+
+  <!-- orbital ring: rotates slowly (SMIL) -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0 256 266" to="360 256 266" dur="6s" repeatCount="indefinite"/>
+    <circle cx="256" cy="266" r="104" fill="none" stroke="#8B5CF6" stroke-width="3.5" stroke-dasharray="10 14" opacity="0.6"/>
+  </g>
+
+  <!-- braces draw in (seam-safe) -->
+  <g fill="none" stroke-width="20" stroke-linecap="round" filter="url(#glow)">
+    <path d="M172 168 Q136 168 136 204 L136 236 Q136 266 108 266 Q136 266 136 296 L136 328 Q136 364 172 364" stroke="url(#braceL)"
+      pathLength="100" stroke-dasharray="100">
+      <animate attributeName="stroke-dashoffset" values="100;100;0;0;0" keyTimes="0;0.04;0.26;0.94;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.06;0.26;0.94;1" dur="6s" repeatCount="indefinite"/>
+    </path>
+    <path d="M340 168 Q376 168 376 204 L376 236 Q376 266 404 266 Q376 266 376 296 L376 328 Q376 364 340 364" stroke="url(#braceR)"
+      pathLength="100" stroke-dasharray="100">
+      <animate attributeName="stroke-dashoffset" values="100;100;0;0;0" keyTimes="0;0.08;0.3;0.94;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.1;0.3;0.94;1" dur="6s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- pentagon pupil: pops in mid-loop -->
+  <g class="pupil" filter="url(#glow)">
+    <path d="M256 202 L316.9 246.2 L293.6 317.8 L218.4 317.8 L195.1 246.2 Z" fill="url(#penta)" stroke="#031018" stroke-width="4" stroke-linejoin="round"/>
+    <g stroke="#031018" stroke-width="4" opacity="0.75">
+      <line x1="256" y1="202" x2="256" y2="266"/>
+      <line x1="316.9" y1="246.2" x2="256" y2="266"/>
+      <line x1="293.6" y1="317.8" x2="256" y2="266"/>
+      <line x1="218.4" y1="317.8" x2="256" y2="266"/>
+      <line x1="195.1" y1="246.2" x2="256" y2="266"/>
+    </g>
+  </g>
+
+  <!-- gold receipt spark: pops + ripple, then fades for seam -->
+  <g filter="url(#glow)">
+    <circle cx="352" cy="182" r="16" fill="#FFB300" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5;0.56;0.92;1" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <path d="M352 158 L357 175 L374 182 L357 189 L352 206 L347 189 L330 182 L347 175 Z" fill="#FFD166" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.52;0.58;0.92;1" dur="6s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="352" cy="182" r="10" fill="none" stroke="#FFD166" stroke-width="3">
+      <animate attributeName="r" values="8;8;52;52" keyTimes="0;0.54;0.7;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;0.85;0;0" keyTimes="0;0.54;0.58;0.72;1" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="352" cy="182" r="22" fill="url(#spark)" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.52;0.58;0.68;1" dur="6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

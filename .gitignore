@@ -1,0 +1,39 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Secrets & local keystore — NEVER commit
+.env
+.env.local
+.env.*.local
+*.keystore.json
+/keystore/
+.cuporacle/
+
+# Test / bench scratch
+coverage/
+.vitest/
+
+# internal build scaffolding (not for public repo)
+_BUILD_BRIEF.md
+
+# ── Hardening ────────────────────────────────────────────────────────────
+# All dotenv variants stay out of git, but keep the committed template.
+# (assets/ and fixtures/ are intentionally COMMITTED brand + snapshot work.)
+.env.*
+!.env.example
+
+# npm pack output (publish-readiness dry runs)
+*.tgz
+
+# MCP Inspector / conformance scratch written to the repo root in CI
+/tools.json
+/resources.json
+/prompts.json
+
+# Editor / OS cruft
+.vscode/
+.idea/
+*.swp
+Thumbs.db
