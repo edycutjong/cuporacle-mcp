@@ -17,6 +17,7 @@
 
   ![Node.js](https://img.shields.io/badge/Node.js_%E2%89%A520-339933?style=flat&logo=node.js&logoColor=white)
   ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+  ![](https://badge.mcpx.dev 'MCP')
   ![MCP](https://img.shields.io/badge/MCP-8_tools_%C2%B7_2_resources_%C2%B7_1_prompt-6E56CF?style=flat&logo=modelcontextprotocol&logoColor=white)
   ![Injective EVM](https://img.shields.io/badge/Injective_EVM-eip155%3A1776-00E5FF?style=flat)
   ![x402](https://img.shields.io/badge/x402-autonomous_pay-8B5CF6?style=flat)
