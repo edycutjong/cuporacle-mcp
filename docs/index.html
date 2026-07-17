@@ -79,10 +79,11 @@
   nav.main{margin-left:auto; display:flex; gap:22px; align-items:center; font-size:14px; font-weight:600}
   nav.main a{color:var(--mid)}
   nav.main a:hover, nav.main a:focus-visible{color:var(--cream)}
-  .head-cta{display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px;
+  nav.main a.head-cta, nav.main a.head-cta:hover, nav.main a.head-cta:focus-visible{
+    display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px;
     background:linear-gradient(160deg, var(--gold-br), var(--gold)); color:var(--ink); font-weight:800;
     font-size:13.5px; transition:transform .18s var(--ease), box-shadow .18s var(--ease)}
-  .head-cta:hover{transform:translateY(-1px) scale(1.03); box-shadow:0 10px 26px -10px rgba(233,186,79,.55)}
+  nav.main a.head-cta:hover{transform:translateY(-1px) scale(1.03); box-shadow:0 10px 26px -10px rgba(233,186,79,.55)}
   @media (max-width:760px){ nav.main a.hideable{display:none} }
 
   /* ── hero ──────────────────────────────────────────────────────────── */
