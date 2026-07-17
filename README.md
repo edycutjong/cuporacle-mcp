@@ -9,7 +9,7 @@
   [![Live site](https://img.shields.io/badge/Live-Site-E91E8C?style=for-the-badge&labelColor=0B0A07)](https://cuporacle.edycu.dev/)
   [![Demo Video](https://img.shields.io/badge/%E2%96%B6_Demo_Video-YouTube-FF0000?style=for-the-badge&labelColor=0B0A07)](https://youtu.be/FAI3_xZFTx0)
   [![Pitch Deck](https://img.shields.io/badge/Pitch-Deck-8B5CF6?style=for-the-badge&labelColor=0B0A07)](https://cuporacle.edycu.dev/pitch/)
-  [![npm](https://img.shields.io/badge/npm-after_publish-9E9E9E?style=for-the-badge&labelColor=0B0A07)](https://www.npmjs.com/package/cuporacle-mcp)
+  [![npm](https://img.shields.io/npm/v/cuporacle-mcp?style=for-the-badge&labelColor=0B0A07&color=CB3837&logo=npm&label=npm)](https://www.npmjs.com/package/cuporacle-mcp)
   [![Docs](https://img.shields.io/badge/Docs-reference-00E5FF?style=for-the-badge&labelColor=0B0A07)](https://cuporacle.edycu.dev/reference.html)
   ![HackQuest · Injective Global Cup 2026](https://img.shields.io/badge/HackQuest-Injective_Global_Cup_2026-0082FA?style=for-the-badge&labelColor=0B0A07)
 
@@ -29,7 +29,7 @@
 <p align="center">
   <b>Your AI assistant is football-blind during the biggest event on earth</b> — it can't see tonight's World Cup match, has no odds, and has no way to pay for premium data itself.<br/>
   <b>CupOracle is a published MCP server that fixes that:</b> live FIFA World Cup 2026 fixtures, scores, consensus odds and the knockout bracket as <b>free</b> tools — plus <b><code>wc_edge</code>, an agent that pays 0.05 USDC via Injective x402 <i>by itself</i></b> (under a spend cap) and cites the on-chain receipt.<br/>
-  <b>Shipped:</b> 8 tools · 2 resources · 1 prompt over stdio · 63 vitest · MCP-Inspector-conformant in CI · publish-ready npm package.
+  <b>Shipped:</b> 8 tools · 2 resources · 1 prompt over stdio · 63 vitest · MCP-Inspector-conformant in CI · live on npm (`npx -y cuporacle-mcp`).
 </p>
 
 <p align="center">📊 <strong><a href="https://cuporacle.edycu.dev/pitch/">Pitch deck</a></strong> (interactive — arrow keys · press <kbd>P</kbd> to print) · 🌐 <a href="https://cuporacle.edycu.dev/">Live site</a></p>
@@ -39,10 +39,10 @@
 claude mcp add cuporacle -- npx -y cuporacle-mcp
 ```
 
-> **Reproducing now (pre-publish):** the `npx cuporacle-mcp` line activates once
-> the package is published — a post-judging gate (see [`STATUS.md`](docs/STATUS.md)).
-> Until then, run it from source in seconds:
-> `git clone https://github.com/edycutjong/cuporacle-mcp && cd cuporacle-mcp && npm install && npm run smoke`.
+> **Published:** [`cuporacle-mcp` is live on npm](https://www.npmjs.com/package/cuporacle-mcp)
+> (also mirrored to [GitHub Packages](https://github.com/edycutjong/cuporacle-mcp/pkgs/npm/cuporacle-mcp)
+> as `@edycutjong/cuporacle-mcp`), so the `npx -y cuporacle-mcp` line above works today.
+> Prefer source? `git clone https://github.com/edycutjong/cuporacle-mcp && cd cuporacle-mcp && npm install && npm run smoke`.
 
 `cuporacle-mcp` is a standalone [Model Context Protocol](https://modelcontextprotocol.io)
 server that runs **side by side with the Injective MCP server**: **8 tools + 2

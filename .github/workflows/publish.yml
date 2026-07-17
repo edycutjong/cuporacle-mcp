@@ -1,7 +1,11 @@
 name: Publish to npm
 
-# Publishes cuporacle-mcp to npm when a GitHub Release is published (tag v*).
-# Required repo secret: NPM_TOKEN (an npm automation token with publish rights).
+# Publishes cuporacle-mcp to npmjs.org when a GitHub Release is published
+# (semantic-release creates those on main; its own npmPublish is off, so this
+# workflow is the single npm-publish path). Requires repo secret NPM_TOKEN — a
+# valid npm granular token (read+write). While the token is missing or invalid
+# the workflow GREEN-SKIPS with a warning instead of failing red; re-run it
+# from the Actions tab after fixing the secret.
 on:
   release:
     types: [published]
@@ -17,11 +21,29 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
+      - name: Check npm token
+        id: token
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN secret is not set — skipping npm publish."
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          elif npm whoami >/dev/null 2>&1; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::NPM_TOKEN is invalid (npm whoami failed) — skipping npm publish. Fix the secret, then re-run this workflow."
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm ci
+        if: steps.token.outputs.valid == 'true'
       - run: npm run build
+        if: steps.token.outputs.valid == 'true'
       - run: npm test
+        if: steps.token.outputs.valid == 'true'
       - name: Skip if version already on the registry
         id: guard
+        if: steps.token.outputs.valid == 'true'
         run: |
           V=$(node -p "require('./package.json').version")
           if npm view "cuporacle-mcp@$V" version >/dev/null 2>&1; then
@@ -31,7 +53,7 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Publish
-        if: steps.guard.outputs.skip != 'true'
+        if: steps.token.outputs.valid == 'true' && steps.guard.outputs.skip != 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

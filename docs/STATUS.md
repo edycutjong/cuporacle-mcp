@@ -82,8 +82,8 @@ parallel and not yet frozen/live.
 
 ## Deferred / not in this session
 
-- `npm publish` (needs login; package is publish-*ready* only — no publish run).
-- `npm publish --provenance` via GitHub OIDC (CI workflow written; not executed).
+- ~~`npm publish`~~ **DONE 2026-07-17**: [`cuporacle-mcp@1.0.0` is live on npm](https://www.npmjs.com/package/cuporacle-mcp),
+  mirrored to [GitHub Packages](https://github.com/edycutjong/cuporacle-mcp/pkgs/npm/cuporacle-mcp) as `@edycutjong/cuporacle-mcp`.
 - Live per-match screenshots for the X thread (needs the demo recording pass).
 
 ## Definition-of-done checklist (from _BUILD_BRIEF.md)
