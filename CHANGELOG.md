@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/edycutjong/cuporacle-mcp/compare/v1.0.0...v1.1.0) (2026-07-17)
+
+
+### Features
+
+* **docs:** restyle reference page to matchday-programme design system (TOC scrollspy, reveals, terminal frames) ([f6166df](https://github.com/edycutjong/cuporacle-mcp/commit/f6166df8cbdaae84c4e130dfbe7a31dc4eab16cb))
+
 # 1.0.0 (2026-07-17)
 
 

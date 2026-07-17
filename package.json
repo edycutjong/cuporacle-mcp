@@ -1,6 +1,6 @@
 {
   "name": "cuporacle-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "World Cup MCP server: fixtures, live scores, odds, and an agent that pays x402 itself for a vetted edge on Injective — then cites the receipt.",
   "keywords": [
     "mcp",
