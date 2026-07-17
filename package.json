@@ -1,7 +1,7 @@
 {
   "name": "cuporacle-mcp",
   "version": "1.0.0",
-  "description": "World Cup MCP server: fixtures, live scores, odds, and an agent that pays x402 itself for a vetted edge on Injective — then cites the receipt.",
+  "description": "World Cup MCP server: fixtures, live scores, odds, and an agent that pays x402 itself for a vetted edge on Injective \u2014 then cites the receipt.",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -23,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/edycutjong/cuporacle-mcp/issues"
   },
-  "homepage": "https://github.com/edycutjong/cuporacle-mcp#readme",
+  "homepage": "https://cuporacle.edycu.dev",
   "type": "module",
   "bin": {
     "cuporacle-mcp": "dist/bin/cuporacle-mcp.js"
