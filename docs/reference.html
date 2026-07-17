@@ -5,124 +5,380 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>cuporacle-mcp — the World Cup MCP server</title>
 <meta name="description" content="One npx line adds World Cup awareness + autonomous x402 payments to any MCP harness. An agent that buys and proves its own alpha on Injective." />
+<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#081A11" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
 <style>
+  /* ── Design system: editorial sports-data / matchday programme ─────────
+     Deep pitch-green + charcoal · gold/cream accents · Unbounded + Manrope */
   :root{
-    --primary:#00E5FF; --accent:#8B5CF6; --pink:#E91E8C;
-    --bg:#070B14; --panel:#0d1424; --panel-2:#111a2e;
-    --line:rgba(255,255,255,.08); --text:#e8eefc; --muted:#93a1c0; --gold:#F5C451;
-    --ok:#22C55E; --warn:#F59E0B;
+    --bg:#081A11; --bg2:#0B2216; --char:#0C110C;
+    --card:#0F2519; --card2:#122B1D; --card-gold:#161F0F;
+    --line:rgba(236,243,228,.10); --line-strong:rgba(236,243,228,.16);
+    --gold:#E9BA4F; --gold-br:#F7D97F; --gold-dk:#8C6A1F;
+    --cream:#F4EFE0; --hi:#F2F5EC; --mid:#B2C4B0; --low:#7E937F;
+    --grass:#63D68F; --grass-dim:#3E9A63;
+    --ink:#1B1405;
+    --fd:'Unbounded', ui-sans-serif, system-ui, sans-serif;
+    --fb:'Manrope', ui-sans-serif, system-ui, sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --ease:cubic-bezier(.22,.9,.3,1);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);
-    font:15px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    background-image:
-      radial-gradient(900px 520px at 82% -5%, rgba(0,229,255,.12), transparent 60%),
-      radial-gradient(760px 520px at 8% 100%, rgba(139,92,246,.12), transparent 62%);
-    background-attachment:fixed;}
-  code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  a{color:var(--primary);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
-  header{padding:64px 0 28px;text-align:center}
-  .badge{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--primary);border:1px solid var(--line);border-radius:999px;padding:5px 14px;margin-bottom:20px;
-    background:rgba(0,229,255,.06)}
-  h1{font-size:clamp(34px,6vw,58px);margin:.1em 0;letter-spacing:-.02em;
-    background:linear-gradient(100deg,#7FF0FF,#00E5FF 42%,#A78BFA);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .tag{color:var(--muted);font-size:clamp(15px,2.4vw,19px);max-width:660px;margin:12px auto 26px}
-  .install{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
-  .cmd{background:#05080f;border:1px solid var(--line);border-radius:12px;padding:14px 18px;
-    color:#cfe;box-shadow:0 0 40px rgba(0,229,255,.08)}
-  .cmd .p{color:var(--primary)}
-  button.copy{background:var(--primary);color:#04121a;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
-  button.copy:hover{filter:brightness(1.08)}
-  .pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-  .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
-  section{padding:34px 0;border-top:1px solid var(--line)}
-  h2{font-size:24px;margin:0 0 6px}
-  .sub{color:var(--muted);margin:0 0 20px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-  .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);
-    border-radius:14px;padding:16px 16px 14px}
-  .card h3{margin:0 0 6px;font-size:15px;font-family:ui-monospace,monospace}
-  .card p{margin:0;color:var(--muted);font-size:13.5px}
-  .card .free{color:var(--primary)} .card .paid{color:var(--gold)}
-  .chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-bottom:9px}
-  .chip.free{background:rgba(0,229,255,.1);color:var(--primary);border:1px solid rgba(0,229,255,.25)}
-  .chip.paid{background:rgba(245,196,81,.12);color:var(--gold);border:1px solid rgba(245,196,81,.3)}
-  pre{background:#05080f;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13px}
-  .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:8px 14px;cursor:pointer;font-size:13px}
-  .tab.on{color:var(--primary);border-color:rgba(0,229,255,.4);background:rgba(0,229,255,.06)}
-  .flow{background:#05080f;border:1px solid var(--line);border-radius:14px;padding:18px 18px}
-  .flow .row{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
-  .flow .row:last-child{border-bottom:0}
-  .flow .n{flex:0 0 26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(139,92,246,.16);color:#c7b6ff;font-size:13px;font-weight:700}
-  .flow .n.gold{background:rgba(245,196,81,.16);color:var(--gold)}
-  .tone{color:var(--muted);font-size:13.5px}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-  .tile b{display:block;font-size:22px;color:var(--primary)}
-  .tile span{color:var(--muted);font-size:12.5px}
-  .note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.28);border-radius:12px;padding:12px 14px;color:#ffdfa6;font-size:13.5px}
-  footer{padding:36px 0 60px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line)}
-  .kbd{font-family:ui-monospace,monospace;background:#05080f;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:#cfe}
+  html{scroll-behavior:smooth; scroll-padding-top:96px}
+  body{
+    margin:0; color:var(--hi); font-family:var(--fb); line-height:1.65;
+    -webkit-font-smoothing:antialiased; font-size:16px;
+    background:
+      radial-gradient(1100px 640px at 78% -10%, rgba(233,186,79,.09), transparent 62%),
+      radial-gradient(900px 620px at -6% 30%, rgba(99,214,143,.06), transparent 60%),
+      repeating-linear-gradient(90deg, rgba(244,239,224,.014) 0 90px, rgba(0,0,0,0) 90px 180px),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, var(--bg) 100%);
+    overflow-x:hidden;
+  }
+  code,pre,.mono{font-family:var(--mono)}
+  a{color:var(--gold-br); text-decoration:none}
+  a:hover{text-decoration:none}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px}
+  .grad{background:linear-gradient(94deg, var(--gold-br) 8%, var(--gold) 48%, #D9A038 90%);
+    -webkit-background-clip:text; background-clip:text; color:transparent}
+
+  /* animated link underline */
+  .u{position:relative}
+  .u::after{content:""; position:absolute; left:0; right:0; bottom:-3px; height:1.5px;
+    background:linear-gradient(90deg, var(--gold-br), var(--gold)); transform:scaleX(0);
+    transform-origin:left; transition:transform .3s var(--ease)}
+  .u:hover::after, .u:focus-visible::after{transform:scaleX(1)}
+
+  /* ── sticky header ─────────────────────────────────────────────────── */
+  .site-head{position:fixed; top:0; left:0; right:0; z-index:50;
+    border-bottom:1px solid transparent; transition:background .3s var(--ease), border-color .3s var(--ease)}
+  .site-head.scrolled{background:rgba(8,26,17,.78); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border-color:var(--line)}
+  .site-head .in{display:flex; align-items:center; gap:18px; padding:14px 24px; max-width:1120px; margin:0 auto}
+  .brand{display:inline-flex; align-items:center; gap:10px; color:var(--cream); font-family:var(--fd);
+    font-weight:700; font-size:15px; letter-spacing:.01em}
+  .brand img{width:32px; height:32px}
+  .brand .crumb{color:var(--low); font-family:var(--fb); font-weight:700; font-size:13px}
+  nav.main{margin-left:auto; display:flex; gap:22px; align-items:center; font-size:14px; font-weight:600}
+  nav.main a{color:var(--mid)}
+  nav.main a:hover, nav.main a:focus-visible{color:var(--cream)}
+  nav.main a.head-cta, nav.main a.head-cta:hover, nav.main a.head-cta:focus-visible{
+    display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px;
+    background:linear-gradient(160deg, var(--gold-br), var(--gold)); color:var(--ink); font-weight:800;
+    font-size:13.5px; transition:transform .18s var(--ease), box-shadow .18s var(--ease)}
+  nav.main a.head-cta:hover{transform:translateY(-1px) scale(1.03); box-shadow:0 10px 26px -10px rgba(233,186,79,.55)}
+  @media (max-width:760px){ nav.main a.hideable{display:none} }
+
+  /* ── docs hero ─────────────────────────────────────────────────────── */
+  .hero{position:relative; text-align:center; padding:140px 24px 48px; overflow:hidden}
+  .hero .pitchlines{position:absolute; inset:0; pointer-events:none; opacity:.5}
+  .hero .pitchlines svg{position:absolute; left:50%; top:48%; transform:translate(-50%,-50%); width:min(1400px,160vw)}
+  .hero .halftone{position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(rgba(244,239,224,.05) 1px, transparent 1.6px);
+    background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(720px 460px at 50% 20%, #000 0%, transparent 75%);
+    mask-image:radial-gradient(720px 460px at 50% 20%, #000 0%, transparent 75%)}
+  .kicker{display:inline-flex; align-items:center; gap:9px; padding:8px 16px; border:1px solid var(--line-strong);
+    border-radius:999px; background:rgba(233,186,79,.07); color:var(--gold-br); font-size:12.5px; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase; font-family:var(--fb)}
+  .kicker .dot{width:7px; height:7px; border-radius:50%; background:var(--grass); box-shadow:0 0 12px var(--grass)}
+  .hero h1{font-family:var(--fd); font-weight:700; letter-spacing:-.015em; line-height:1.08;
+    font-size:clamp(2rem, 5.4vw, 4rem); margin:26px auto 0; color:var(--cream)}
+  .hero .tag{font-size:clamp(1rem, 1.8vw, 1.18rem); color:var(--mid); max-width:64ch; margin:20px auto 0; line-height:1.65}
+  .hero .tag b{color:var(--cream)}
+  .install-line{display:flex; gap:12px; align-items:stretch; justify-content:center; flex-wrap:wrap; margin-top:30px}
+  .cmd{display:flex; align-items:center; background:#07120B; border:1px solid var(--line-strong); border-radius:14px;
+    padding:14px 20px; color:var(--cream); font-family:var(--mono); font-size:14px;
+    box-shadow:0 18px 44px -22px rgba(0,0,0,.8); overflow-x:auto; max-width:100%}
+  .cmd .p{color:var(--gold-br)}
+  button.copy, button.copy:hover, button.copy:focus-visible{
+    display:inline-flex; align-items:center; gap:8px; border:0; cursor:pointer; border-radius:999px; padding:13px 22px;
+    background:linear-gradient(160deg, var(--gold-br), var(--gold) 65%); color:var(--ink) !important;
+    font-family:var(--fb); font-weight:800; font-size:14.5px;
+    transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+    box-shadow:0 14px 34px -14px rgba(233,186,79,.6)}
+  button.copy:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 20px 44px -14px rgba(233,186,79,.75)}
+  .pills{display:flex; gap:9px; justify-content:center; flex-wrap:wrap; margin-top:24px}
+  .pill{font-size:12.5px; color:var(--mid); border:1px solid var(--line); border-radius:999px; padding:6px 13px;
+    background:rgba(244,239,224,.03); font-family:var(--mono);
+    transition:border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease)}
+  .pill:hover{border-color:rgba(233,186,79,.45); color:var(--cream); transform:translateY(-2px)}
+
+  /* ── layout: sticky TOC + content ──────────────────────────────────── */
+  .layout{display:grid; grid-template-columns:230px minmax(0,1fr); gap:44px; max-width:1120px;
+    margin:0 auto; padding:20px 24px 40px; align-items:start}
+  @media (max-width:920px){ .layout{grid-template-columns:1fr; gap:0} }
+
+  .toc{position:sticky; top:92px}
+  .toc summary{list-style:none; cursor:pointer; display:none}
+  .toc summary::-webkit-details-marker{display:none}
+  .toc .hd{font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:800;
+    margin:0 0 12px; font-family:var(--fb)}
+  .toc ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;
+    border-left:1px solid var(--line)}
+  .toc ul ul{border-left:0; margin:2px 0 4px; gap:1px}
+  .toc a{display:block; padding:6px 0 6px 14px; color:var(--mid); font-size:13.5px; font-weight:600;
+    border-left:2px solid transparent; margin-left:-1.5px;
+    transition:color .2s var(--ease), border-color .2s var(--ease)}
+  .toc ul ul a{padding:3.5px 0 3.5px 26px; font-size:12.5px; font-family:var(--mono); font-weight:500; color:var(--low)}
+  .toc a:hover{color:var(--cream)}
+  .toc a.on{color:var(--gold-br); border-left-color:var(--gold)}
+  @media (max-width:920px){
+    .toc{position:static; margin-top:6px; border:1px solid var(--line); border-radius:14px; background:var(--card);
+      padding:14px 18px}
+    .toc summary{display:flex; align-items:center; gap:10px; color:var(--cream); font-weight:800; font-size:14px}
+    .toc summary .chev{margin-left:auto; color:var(--gold); transition:transform .3s var(--ease)}
+    .toc[open] summary .chev{transform:rotate(45deg)}
+    .toc .hd{display:none}
+    .toc ul{margin-top:12px}
+  }
+
+  /* ── sections ──────────────────────────────────────────────────────── */
+  section{padding:52px 0; border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0; padding-top:24px}
+  .eyebrow{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:800;
+    margin:0 0 12px; font-family:var(--fb)}
+  h2.sec{font-family:var(--fd); font-size:clamp(1.35rem,2.8vw,1.9rem); font-weight:700; letter-spacing:-.01em;
+    margin:0 0 10px; color:var(--cream); line-height:1.2}
+  .sub{color:var(--mid); margin:0 0 26px; font-size:15.5px; line-height:1.7; max-width:68ch}
+  .sub b{color:var(--cream)}
+
+  /* scroll reveals */
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .reveal.in{opacity:1; transform:translateY(0)}
+
+  /* ── tool cards ────────────────────────────────────────────────────── */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px}
+  .card{position:relative; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 18px 16px;
+    transition:transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease)}
+  .card:hover{transform:translateY(-5px); border-color:rgba(233,186,79,.45);
+    box-shadow:0 22px 46px -22px rgba(0,0,0,.7), 0 0 0 1px rgba(233,186,79,.18)}
+  .card h3{margin:0 0 6px; font-size:15px; font-family:var(--mono); font-weight:700; color:var(--cream); letter-spacing:-.01em}
+  .card p{margin:0; color:var(--mid); font-size:13.5px; line-height:1.6}
+  .chip{display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    padding:3px 10px; border-radius:999px; margin-bottom:10px; font-family:var(--fb)}
+  .chip.free{background:rgba(99,214,143,.08); color:var(--grass); border:1px solid rgba(99,214,143,.35)}
+  .chip.paid{background:rgba(233,186,79,.1); color:var(--gold-br); border:1px solid rgba(233,186,79,.55)}
+  .card.paid{background:linear-gradient(150deg, #1B2410 0%, var(--card-gold) 45%, #101B10 100%);
+    border-color:rgba(233,186,79,.4)}
+  .card.paid::before{content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+    background:radial-gradient(260px 160px at 85% -10%, rgba(233,186,79,.18), transparent 70%)}
+  .card.paid:hover{border-color:var(--gold); box-shadow:0 26px 60px -22px rgba(0,0,0,.75), 0 0 0 1px rgba(233,186,79,.35)}
+
+  .extras{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; font-family:var(--mono); font-size:12.5px; color:var(--mid)}
+  .extras span{padding:6px 12px; border:1px solid var(--line); border-radius:8px; background:rgba(244,239,224,.03);
+    transition:border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease)}
+  .extras span:hover{border-color:rgba(233,186,79,.45); color:var(--cream); transform:translateY(-2px)}
+
+  /* ── x402 flow steps ───────────────────────────────────────────────── */
+  .steps{display:flex; flex-direction:column; gap:0; border:1px solid var(--line-strong); border-radius:16px;
+    background:#07120B; box-shadow:0 30px 70px -36px rgba(0,0,0,.85); overflow:hidden}
+  .steps .bar{display:flex; align-items:center; gap:7px; padding:11px 15px; border-bottom:1px solid var(--line);
+    background:rgba(244,239,224,.03); color:var(--low); font-size:11px; letter-spacing:.1em; font-family:var(--mono)}
+  .steps .bar i{width:9px; height:9px; border-radius:50%; background:#22301F; display:inline-block}
+  .step{display:flex; gap:16px; align-items:flex-start; padding:16px 20px; border-bottom:1px dashed var(--line);
+    font-family:var(--mono); font-size:13.2px; line-height:1.7; color:var(--cream)}
+  .step:last-child{border-bottom:0}
+  .step .n{flex:0 0 30px; height:30px; border-radius:50%; display:grid; place-items:center; font-family:var(--fd);
+    font-size:12px; font-weight:700; color:var(--grass); border:1.5px solid rgba(99,214,143,.4); background:var(--char)}
+  .step .n.gold{color:var(--ink); background:linear-gradient(160deg, var(--gold-br), var(--gold));
+    border-color:transparent; box-shadow:0 0 22px rgba(233,186,79,.35)}
+  .step b{color:var(--gold-br)}
+  .tone{color:var(--low); font-size:12.6px}
+
+  .note{border:1px solid rgba(233,186,79,.3); background:rgba(233,186,79,.045); border-radius:14px;
+    padding:15px 18px; color:var(--mid); font-size:14px; line-height:1.7}
+  .note b{color:var(--cream)}
+  .kbd{font-family:var(--mono); font-size:.92em; color:var(--gold-br); background:rgba(233,186,79,.08);
+    border:1px solid rgba(233,186,79,.28); border-radius:6px; padding:1px 7px}
+
+  /* ── harness tabs + terminal code ──────────────────────────────────── */
+  .tabs{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap}
+  .tab{background:var(--card); border:1px solid var(--line); color:var(--mid); border-radius:999px; padding:8px 16px;
+    cursor:pointer; font-size:13px; font-weight:700; font-family:var(--fb);
+    transition:color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease), transform .18s var(--ease)}
+  .tab:hover{color:var(--cream); border-color:rgba(233,186,79,.35); transform:translateY(-1px)}
+  .tab.on{color:var(--ink); background:linear-gradient(160deg, var(--gold-br), var(--gold)); border-color:transparent}
+  .term{border:1px solid var(--line-strong); border-radius:16px; overflow:hidden; background:#07120B;
+    box-shadow:0 30px 70px -36px rgba(0,0,0,.85)}
+  .term .bar{display:flex; align-items:center; gap:7px; padding:11px 15px; border-bottom:1px solid var(--line);
+    background:rgba(244,239,224,.03); color:var(--low); font-size:11px; letter-spacing:.1em; font-family:var(--mono)}
+  .term .bar i{width:9px; height:9px; border-radius:50%; background:#22301F; display:inline-block}
+  .term .bar i:first-child{background:rgba(233,186,79,.55)}
+  .term pre{margin:0; padding:18px 20px 22px; overflow-x:auto; font-family:var(--mono); font-size:13.2px;
+    line-height:1.75; color:var(--mid)}
+  .term pre .p{color:var(--gold-br)}
+  .tone-note{color:var(--low); font-size:14px; margin-top:16px; max-width:72ch}
+  .tone-note b{color:var(--cream)}
+
+  /* ── bench tiles ───────────────────────────────────────────────────── */
+  .tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px}
+  .tile{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px;
+    transition:transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease)}
+  .tile:hover{transform:translateY(-4px); border-color:rgba(233,186,79,.45);
+    box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+  .tile b{display:block; font-family:var(--fd); font-weight:700; font-size:20px; color:var(--gold-br);
+    font-variant-numeric:tabular-nums; line-height:1.2}
+  .tile span{color:var(--low); font-size:12.5px; display:block; margin-top:6px; line-height:1.5}
+
+  /* ── footer ────────────────────────────────────────────────────────── */
+  footer{background:var(--char); border-top:1px solid var(--line); padding:36px 24px 48px; color:var(--low);
+    font-size:13.5px; text-align:center}
+  footer b{color:var(--cream)}
+  footer a{color:var(--mid)}
+  footer a:hover{color:var(--cream)}
+
+  /* ── reduced motion ────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *, *::before, *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important}
+    .reveal{opacity:1 !important; transform:none !important}
+  }
 </style>
 </head>
 <body>
-<header class="wrap">
-  <div class="badge">MCP · x402 · Injective</div>
-  <h1>cuporacle-mcp</h1>
-  <p class="tag">The missing <b>World Cup MCP server</b>. One line gives any agent live fixtures, scores, and odds — plus a tool that <b>pays x402 itself</b>, under a spend cap, and cites the on-chain receipt.</p>
-  <div class="install">
-    <div class="cmd mono"><span class="p">claude mcp add</span> cuporacle -- npx -y cuporacle-mcp</div>
-    <button class="copy" onclick="navigator.clipboard.writeText('claude mcp add cuporacle -- npx -y cuporacle-mcp')">Copy</button>
-  </div>
-  <div class="pills">
-    <span class="pill">8 tools</span><span class="pill">2 resources</span><span class="pill">1 prompt</span>
-    <span class="pill">stdio</span><span class="pill">MIT</span><span class="pill">Inspector-conformant</span>
+
+<header class="site-head" id="siteHead">
+  <div class="in">
+    <a class="brand" href="./index.html" aria-label="CupOracle home">
+      <img src="./icon.svg" alt="" width="32" height="32" /> cuporacle-mcp <span class="crumb">/ reference</span>
+    </a>
+    <nav class="main" aria-label="Main">
+      <a class="u hideable" href="#tools">Tools</a>
+      <a class="u hideable" href="#flow">Pay flow</a>
+      <a class="u hideable" href="#harness">Harness</a>
+      <a class="u hideable" href="#bench">Bench</a>
+      <a class="u hideable" href="./index.html">Landing</a>
+      <a class="head-cta" href="./pitch/">Pitch deck</a>
+    </nav>
   </div>
 </header>
 
-<section class="wrap">
-  <h2>The eight tools</h2>
-  <p class="sub">Four free data tools. One that spends ~5¢ of USDC to buy a vetted edge. Three for proof &amp; governance.</p>
-  <div class="grid">
-    <div class="card"><span class="chip free">free</span><h3>wc_fixtures</h3><p>Fixtures for a day or the next upcoming window.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>wc_live</h3><p>Live score, minute and status for a match.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>wc_odds</h3><p>Consensus h2h odds + de-vigged probabilities.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>wc_bracket</h3><p>Knockout bracket state, R16 → Final.</p></div>
-    <div class="card"><span class="chip paid">pays x402</span><h3>wc_edge</h3><p>CLV-audited edge + ladder. Pays itself, cites the receipt.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>receipt_verify</h3><p>Verify a receipt on Injective EVM.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>wallet_fund_guide</h3><p>CCTP runbook to fund the agent wallet.</p></div>
-    <div class="card"><span class="chip free">free</span><h3>wc_spend_ledger</h3><p>Auditable purchase history vs the cap.</p></div>
+<!-- ═══ DOCS HERO ═══ -->
+<header class="hero" id="top">
+  <div class="pitchlines" aria-hidden="true">
+    <svg viewBox="0 0 1200 700" fill="none" stroke="rgba(244,239,224,.06)" stroke-width="1.5">
+      <line x1="600" y1="0" x2="600" y2="700"/>
+      <circle cx="600" cy="350" r="150"/>
+      <circle cx="600" cy="350" r="4" fill="rgba(233,186,79,.25)" stroke="none"/>
+      <rect x="0" y="150" width="180" height="400" rx="2"/>
+      <rect x="1020" y="150" width="180" height="400" rx="2"/>
+    </svg>
   </div>
-</section>
+  <div class="halftone" aria-hidden="true"></div>
+  <div class="wrap" style="position:relative">
+    <p class="kicker"><span class="dot"></span> MCP · x402 · Injective</p>
+    <h1>cuporacle-mcp <span class="grad">reference</span></h1>
+    <p class="tag">The missing <b>World Cup MCP server</b>. One line gives any agent live fixtures, scores, and odds — plus a tool that <b>pays x402 itself</b>, under a spend cap, and cites the on-chain receipt.</p>
+    <div class="install-line">
+      <div class="cmd mono"><span><span class="p">claude mcp add</span> cuporacle -- npx -y cuporacle-mcp</span></div>
+      <button class="copy" id="copyBtn" type="button">Copy</button>
+    </div>
+    <div class="pills">
+      <span class="pill">8 tools</span><span class="pill">2 resources</span><span class="pill">1 prompt</span>
+      <span class="pill">stdio</span><span class="pill">MIT</span><span class="pill">Inspector-conformant</span>
+    </div>
+  </div>
+</header>
 
-<section class="wrap">
-  <h2>The paid edge, step by step</h2>
-  <p class="sub">An LLM buys and proves its own alpha inside one conversation.</p>
-  <div class="flow mono">
-    <div class="row"><div class="n">1</div><div><b>POST /api/edge</b> → <span class="tone">402 &#123; accepts: [&#123; network: eip155:1776, amount: 50000, asset: 0xa00C…235a, payTo &#125;] &#125;</span></div></div>
-    <div class="row"><div class="n">2</div><div>spend-cap gate <span class="tone">— per-call max · session cap · ask-human-above-cap</span></div></div>
-    <div class="row"><div class="n">3</div><div>sign EIP-3009 authorization <span class="tone">locally (viem, no broadcast)</span> → PAYMENT-SIGNATURE</div></div>
-    <div class="row"><div class="n gold">4</div><div>200 &#123; edge, ladder, pick_hash &#125; + <b style="color:var(--gold)">PAYMENT-RESPONSE &#123; transaction: 0x… &#125;</b></div></div>
-    <div class="row"><div class="n">5</div><div>agent cites <b>receipt_tx</b> → <b>receipt_verify(0x…)</b> <span class="tone">→ block time + amount on Injective</span></div></div>
-  </div>
-  <p class="note" style="margin-top:14px">Governance first: on the call that would breach the cap, <span class="kbd">SPEND_CAP_HIT</span> tells the agent to <b>ask the human</b> — it never raises its own cap. Every spend is visible in <span class="kbd">wc_spend_ledger</span>.</p>
-</section>
+<div class="layout">
 
-<section class="wrap">
-  <h2>Add it to your harness</h2>
-  <div class="tabs">
-    <button class="tab on" data-t="cc">Claude Code</button>
-    <button class="tab" data-t="cd">Claude Desktop</button>
-    <button class="tab" data-t="cu">Cursor</button>
-  </div>
+  <!-- ═══ TOC ═══ -->
+  <details class="toc" id="toc" open>
+    <summary>On this page
+      <span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span>
+    </summary>
+    <p class="hd">On this page</p>
+    <nav aria-label="Table of contents">
+      <ul>
+        <li><a href="#tools">The eight tools</a>
+          <ul>
+            <li><a href="#t-wc_fixtures">wc_fixtures</a></li>
+            <li><a href="#t-wc_live">wc_live</a></li>
+            <li><a href="#t-wc_odds">wc_odds</a></li>
+            <li><a href="#t-wc_bracket">wc_bracket</a></li>
+            <li><a href="#t-wc_edge">wc_edge</a></li>
+            <li><a href="#t-receipt_verify">receipt_verify</a></li>
+            <li><a href="#t-wallet_fund_guide">wallet_fund_guide</a></li>
+            <li><a href="#t-wc_spend_ledger">wc_spend_ledger</a></li>
+          </ul>
+        </li>
+        <li><a href="#resources">Resources &amp; prompt</a></li>
+        <li><a href="#flow">The paid edge, step by step</a></li>
+        <li><a href="#harness">Add it to your harness</a></li>
+        <li><a href="#bench">Verify &amp; bench</a></li>
+      </ul>
+    </nav>
+  </details>
+
+  <main>
+
+    <!-- ═══ TOOLS ═══ -->
+    <section id="tools">
+      <p class="eyebrow reveal">The squad sheet</p>
+      <h2 class="sec reveal">The eight tools</h2>
+      <p class="sub reveal" data-d="1">Four free data tools. One that spends ~5¢ of USDC to buy a vetted edge. Three for proof &amp; governance.</p>
+      <div class="grid">
+        <div class="card reveal" data-d="1" id="t-wc_fixtures"><span class="chip free">free</span><h3>wc_fixtures</h3><p>Fixtures for a day or the next upcoming window.</p></div>
+        <div class="card reveal" data-d="2" id="t-wc_live"><span class="chip free">free</span><h3>wc_live</h3><p>Live score, minute and status for a match.</p></div>
+        <div class="card reveal" data-d="3" id="t-wc_odds"><span class="chip free">free</span><h3>wc_odds</h3><p>Consensus h2h odds + de-vigged probabilities.</p></div>
+        <div class="card reveal" data-d="1" id="t-wc_bracket"><span class="chip free">free</span><h3>wc_bracket</h3><p>Knockout bracket state, R16 → Final.</p></div>
+        <div class="card paid reveal" data-d="2" id="t-wc_edge"><span class="chip paid">pays x402</span><h3>wc_edge</h3><p>CLV-audited edge + ladder. Pays itself, cites the receipt.</p></div>
+        <div class="card reveal" data-d="3" id="t-receipt_verify"><span class="chip free">free</span><h3>receipt_verify</h3><p>Verify a receipt on Injective EVM.</p></div>
+        <div class="card reveal" data-d="1" id="t-wallet_fund_guide"><span class="chip free">free</span><h3>wallet_fund_guide</h3><p>CCTP runbook to fund the agent wallet.</p></div>
+        <div class="card reveal" data-d="2" id="t-wc_spend_ledger"><span class="chip free">free</span><h3>wc_spend_ledger</h3><p>Auditable purchase history vs the cap.</p></div>
+      </div>
+    </section>
+
+    <!-- ═══ RESOURCES & PROMPT ═══ -->
+    <section id="resources">
+      <p class="eyebrow reveal">Beyond tools</p>
+      <h2 class="sec reveal">Resources &amp; prompt</h2>
+      <p class="sub reveal" data-d="1">Two MCP resources and one prompt ship alongside the tools.</p>
+      <div class="extras reveal" data-d="2">
+        <span>resource · wc://bracket</span>
+        <span>resource · wc://ledger</span>
+        <span>prompt · analyze-match(matchId)</span>
+      </div>
+    </section>
+
+    <!-- ═══ PAID EDGE FLOW ═══ -->
+    <section id="flow">
+      <p class="eyebrow reveal">The set piece</p>
+      <h2 class="sec reveal">The paid edge, step by step</h2>
+      <p class="sub reveal" data-d="1">An LLM buys and proves its own alpha inside one conversation.</p>
+      <div class="steps reveal" data-d="2">
+        <div class="bar"><i></i><i></i><i></i>&nbsp; wc_edge · x402 exchange</div>
+        <div class="step"><div class="n">1</div><div><b>POST /api/edge</b> → <span class="tone">402 &#123; accepts: [&#123; network: eip155:1776, amount: 50000, asset: 0xa00C…235a, payTo &#125;] &#125;</span></div></div>
+        <div class="step"><div class="n">2</div><div>spend-cap gate <span class="tone">— per-call max · session cap · ask-human-above-cap</span></div></div>
+        <div class="step"><div class="n">3</div><div>sign EIP-3009 authorization <span class="tone">locally (viem, no broadcast)</span> → PAYMENT-SIGNATURE</div></div>
+        <div class="step"><div class="n gold">4</div><div>200 &#123; edge, ladder, pick_hash &#125; + <b>PAYMENT-RESPONSE &#123; transaction: 0x… &#125;</b></div></div>
+        <div class="step"><div class="n">5</div><div>agent cites <b>receipt_tx</b> → <b>receipt_verify(0x…)</b> <span class="tone">→ block time + amount on Injective</span></div></div>
+      </div>
+      <p class="note reveal" data-d="3" style="margin-top:16px">Governance first: on the call that would breach the cap, <span class="kbd">SPEND_CAP_HIT</span> tells the agent to <b>ask the human</b> — it never raises its own cap. Every spend is visible in <span class="kbd">wc_spend_ledger</span>.</p>
+    </section>
+
+    <!-- ═══ HARNESS ═══ -->
+    <section id="harness">
+      <p class="eyebrow reveal">Kick-off</p>
+      <h2 class="sec reveal">Add it to your harness</h2>
+      <div class="tabs reveal" data-d="1" role="tablist" aria-label="Harness configs">
+        <button class="tab on" data-t="cc" type="button">Claude Code</button>
+        <button class="tab" data-t="cd" type="button">Claude Desktop</button>
+        <button class="tab" data-t="cu" type="button">Cursor</button>
+      </div>
+      <div class="term reveal" data-d="2">
+        <div class="bar"><i></i><i></i><i></i>&nbsp; <span id="termLbl">claude mcp</span></div>
 <pre id="cc" class="cfg mono">claude mcp add cuporacle \
   -e FOOTBALL_DATA_KEY=… -e ODDS_API_KEY=… \
   -e CUPORACLE_PRIVATE_KEY=0x… -e CUPORACLE_MAX_SPEND=0.50 \
-  -- npx -y cuporacle-mcp</pre>
+  -- npx -y <span class="p">cuporacle-mcp</span></pre>
 <pre id="cd" class="cfg mono" hidden>{
   "mcpServers": {
     "cuporacle": {
@@ -145,32 +401,116 @@
     }
   }
 }</pre>
-  <p class="tone">Runs side by side with the <b>InjectiveLabs/mcp-server</b> — the Skill routes wallet funding to its <span class="kbd">cctp_mint</span> flow. Interop, not wrap.</p>
-</section>
+      </div>
+      <p class="tone-note reveal" data-d="3">Runs side by side with the <b>InjectiveLabs/mcp-server</b> — the Skill routes wallet funding to its <span class="kbd">cctp_mint</span> flow. Interop, not wrap.</p>
+    </section>
 
-<section class="wrap">
-  <h2>Verify &amp; bench</h2>
-  <p class="sub">Free data cached 60s; <b>wc_edge</b> never cached (fresh pick, fresh receipt).</p>
-  <div class="tiles">
-    <div class="tile"><b>0.0ms</b><span>wc_fixtures cache hit (p50)</span></div>
-    <div class="tile"><b>~740ms</b><span>wc_fixtures cold miss</span></div>
-    <div class="tile"><b>1.6ms</b><span>wc_edge dry_run parse+sign (p50)</span></div>
-    <div class="tile"><b>63</b><span>vitest passing</span></div>
-    <div class="tile"><b>8·2·1</b><span>tools · resources · prompt</span></div>
-  </div>
-  <p class="note" style="margin-top:14px">To confirm a paid edge: paste its tx into <span class="kbd">receipt_verify</span> in your agent, or open it on <a href="https://blockscout.injective.network">blockscout.injective.network</a>. CupOracle never fabricates a receipt — if LineLock is down, <span class="kbd">wc_edge</span> degrades to free odds and says "no vetted edge available".</p>
-</section>
+    <!-- ═══ VERIFY & BENCH ═══ -->
+    <section id="bench">
+      <p class="eyebrow reveal">Full-time stats</p>
+      <h2 class="sec reveal">Verify &amp; bench</h2>
+      <p class="sub reveal" data-d="1">Free data cached 60s; <b>wc_edge</b> never cached (fresh pick, fresh receipt).</p>
+      <div class="tiles">
+        <div class="tile reveal" data-d="1"><b>0.0ms</b><span>wc_fixtures cache hit (p50)</span></div>
+        <div class="tile reveal" data-d="2"><b>~740ms</b><span>wc_fixtures cold miss</span></div>
+        <div class="tile reveal" data-d="3"><b>1.6ms</b><span>wc_edge dry_run parse+sign (p50)</span></div>
+        <div class="tile reveal" data-d="4"><b>63</b><span>vitest passing</span></div>
+        <div class="tile reveal" data-d="5"><b>8·2·1</b><span>tools · resources · prompt</span></div>
+      </div>
+      <p class="note reveal" data-d="3" style="margin-top:16px">To confirm a paid edge: paste its tx into <span class="kbd">receipt_verify</span> in your agent, or open it on <a class="u" href="https://blockscout.injective.network">blockscout.injective.network</a>. CupOracle never fabricates a receipt — if LineLock is down, <span class="kbd">wc_edge</span> degrades to free odds and says "no vetted edge available".</p>
+    </section>
 
-<footer class="wrap">
-  <p><b>cuporacle-mcp</b> · MIT · Football data provided by the Football-Data.org API · Injective EVM eip155:1776</p>
+  </main>
+</div>
+
+<footer>
+  <p><b>cuporacle-mcp</b> · MIT · Football data provided by the Football-Data.org API · Injective EVM eip155:1776 · <a class="u" href="./index.html">Landing</a> · <a class="u" href="./pitch/">Pitch deck</a></p>
 </footer>
 
 <script>
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-    document.querySelectorAll('.cfg').forEach(x=>x.hidden=true);
-    t.classList.add('on'); document.getElementById(t.dataset.t).hidden=false;
-  }));
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* sticky header backdrop on scroll */
+  var head = document.getElementById("siteHead");
+  var onHeadScroll = function(){ head.classList.toggle("scrolled", window.scrollY > 24); };
+  window.addEventListener("scroll", onHeadScroll, { passive:true });
+  onHeadScroll();
+
+  /* copy install command */
+  var copyBtn = document.getElementById("copyBtn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function(){
+      navigator.clipboard.writeText("claude mcp add cuporacle -- npx -y cuporacle-mcp").then(function(){
+        var prev = copyBtn.textContent;
+        copyBtn.textContent = "Copied ✓";
+        setTimeout(function(){ copyBtn.textContent = prev; }, 1400);
+      });
+    });
+  }
+
+  /* harness tabs */
+  var termLbl = document.getElementById("termLbl");
+  var tabNames = { cc: "claude mcp", cd: "claude_desktop_config.json", cu: "mcp.json" };
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("on"); });
+      document.querySelectorAll(".cfg").forEach(function(x){ x.hidden = true; });
+      t.classList.add("on");
+      document.getElementById(t.dataset.t).hidden = false;
+      if (termLbl) termLbl.textContent = tabNames[t.dataset.t] || "config";
+    });
+  });
+
+  /* scroll reveals with stagger (data-d = delay step) */
+  var reveals = document.querySelectorAll(".reveal");
+  if (reduced || !("IntersectionObserver" in window)) {
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var d = parseInt(e.target.getAttribute("data-d") || "0", 10);
+        e.target.style.transitionDelay = (d * 110) + "ms";
+        e.target.classList.add("in");
+        ro.unobserve(e.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    reveals.forEach(function(el){ ro.observe(el); });
+  }
+
+  /* TOC: open on desktop, collapsible on mobile; close after tap on mobile */
+  var toc = document.getElementById("toc");
+  var mq = window.matchMedia("(max-width: 920px)");
+  function syncToc(){ toc.open = !mq.matches; }
+  syncToc();
+  if (mq.addEventListener) mq.addEventListener("change", syncToc);
+  else if (mq.addListener) mq.addListener(syncToc);
+  toc.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){ if (mq.matches) toc.open = false; });
+  });
+
+  /* scrollspy: highlight the TOC entry for the section in view */
+  var tocLinks = Array.prototype.slice.call(toc.querySelectorAll("a[href^='#']"));
+  var targets = tocLinks.map(function(a){
+    return document.getElementById(a.getAttribute("href").slice(1));
+  }).filter(Boolean);
+  var ticking = false;
+  function spy(){
+    ticking = false;
+    var y = window.scrollY + 120;
+    var current = null;
+    targets.forEach(function(t){ if (t.offsetTop <= y) current = t; });
+    tocLinks.forEach(function(a){
+      a.classList.toggle("on", !!current && a.getAttribute("href") === "#" + current.id);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; requestAnimationFrame(spy); }
+  }, { passive:true });
+  spy();
+})();
 </script>
 </body>
 </html>
