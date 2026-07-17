@@ -73,7 +73,7 @@
   /* feature cards */
   .cards{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:30px}
   .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:8px}
-  .card .ic{font-size:24px}
+  .card .ic{height:28px}.card .ic svg{width:26px;height:26px;display:block}
   .card h3{margin:2px 0 0; font-size:16px; font-weight:800; letter-spacing:-.01em}
   .card p{margin:0; color:var(--mid); font-size:13.5px; line-height:1.5}
   .card .k{font-family:var(--mono); font-size:11.5px; color:var(--pink-br); margin-top:2px}
@@ -139,25 +139,25 @@
   <div class="wrap">
     <div class="cards">
       <div class="card">
-        <div class="ic">🧰</div>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cy)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
         <h3>8 MCP tools</h3>
         <p>Fixtures, live scores, odds, bracket and more — served over stdio, MCP-Inspector-conformant in CI.</p>
         <div class="k">2 resources · 1 prompt</div>
       </div>
       <div class="card">
-        <div class="ic">⚽</div>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cy)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7.2 16.6 10.5 14.85 15.9H9.15L7.4 10.5z"/><path d="M12 7.2V2M16.6 10.5l4.8-1.6M14.85 15.9l3 4M9.15 15.9l-3 4M7.4 10.5 2.6 8.9"/></svg></div>
         <h3>Free live data</h3>
         <p>Real FIFA World Cup 2026 fixtures, scores, consensus odds and the knockout bracket — no wallet, no funds.</p>
         <div class="k">wc_fixtures · wc_live · wc_odds · wc_bracket</div>
       </div>
       <div class="card">
-        <div class="ic">🤖</div>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--vi-br)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2.5"/><circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.1V10M9 14.5v1.2M15 14.5v1.2M2 14.5v2M22 14.5v2"/></svg></div>
         <h3>wc_edge · autonomous x402</h3>
         <p>An agent that buys its own premium alpha — pays 0.05 USDC keylessly via Injective x402, under a spend cap.</p>
         <div class="k">EIP-3009 · spend-cap enforced</div>
       </div>
       <div class="card">
-        <div class="ic">🧾</div>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5v19l1.75-1 1.75 1 1.75-1 1.75 1 1.75-1 1.75 1 1.75-1 1.75 1v-19l-1.75 1-1.75-1-1.75 1-1.75-1-1.75 1-1.75-1L8.5 3.5 6.75 2.5z"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5"/></svg></div>
         <h3>receipt_verify on Injective</h3>
         <p>Every paid call cites the on-chain receipt — the agent proves what it bought, never invents an edge.</p>
         <div class="k">eip155:1776 · verifiable</div>
