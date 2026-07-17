@@ -7,7 +7,7 @@
 <meta name="description" content="Pitch deck for cuporacle-mcp — the missing World Cup MCP server: live FIFA World Cup 2026 data as free tools, plus wc_edge, an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt.">
 <link rel="canonical" href="https://edycutjong.github.io/cuporacle-mcp/pitch/">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#070B14">
+<meta name="theme-color" content="#081A11">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="CupOracle — Pitch">
@@ -20,93 +20,174 @@
 <meta name="twitter:title" content="CupOracle — Pitch">
 <meta name="twitter:description" content="The missing World Cup MCP server: live World Cup 2026 data free, plus wc_edge — an agent that pays 0.05 USDC via Injective x402 by itself and cites the on-chain receipt.">
 <meta name="twitter:image" content="https://edycutjong.github.io/cuporacle-mcp/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
+  /* ── Design system: editorial sports-data / matchday programme ─────────
+     Deep pitch-green + charcoal · gold/cream accents · Unbounded + Manrope
+     (mirrors ../index.html — the landing page) */
   :root{
-    --cy:#00E5FF; --cy-br:#7FF0FF; --cy-dp:#0891B2;
-    --vi:#8B5CF6; --vi-br:#A78BFA;
-    --gold:#FFB300; --gold-br:#FFD166;
-    --bg:#070B14; --bg2:#0a1120; --card:#0e1626; --line:#1d2a42;
-    --hi:#F1F7FF; --mid:#93A4C0; --low:#5b6b86;
-    --win:#22C55E; --warn:#F59E0B;
-    --fd:"Helvetica Neue", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --bg:#081A11; --bg2:#0B2216; --char:#0C110C;
+    --card:#0F2519; --card2:#122B1D; --card-gold:#161F0F;
+    --line:rgba(236,243,228,.10); --line-strong:rgba(236,243,228,.16);
+    --gold:#E9BA4F; --gold-br:#F7D97F; --gold-dk:#8C6A1F;
+    --cream:#F4EFE0; --hi:#F2F5EC; --mid:#B2C4B0; --low:#7E937F;
+    --grass:#63D68F; --grass-dim:#3E9A63;
+    --ink:#1B1405;
+    /* legacy aliases used by the slide markup — remapped onto the matchday palette */
+    --cy:var(--gold); --cy-br:var(--gold-br); --cy-dp:var(--gold-dk);
+    --vi:var(--grass-dim); --vi-br:var(--grass);
+    --win:var(--grass); --warn:var(--gold);
+    --fd:'Unbounded', ui-sans-serif, system-ui, sans-serif;
+    --fb:'Manrope', ui-sans-serif, system-ui, sans-serif;
     --mono:ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --ease:cubic-bezier(.22,.9,.3,1);
   }
   *{box-sizing:border-box}
   html{scroll-snap-type:y mandatory; scroll-behavior:smooth; background:var(--bg)}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-  body{margin:0; font-family:var(--fd); color:var(--hi); -webkit-font-smoothing:antialiased; background:
-    radial-gradient(1100px 760px at 82% -12%, rgba(0,229,255,.10), transparent 58%),
-    radial-gradient(900px 680px at 2% 112%, rgba(139,92,246,.12), transparent 55%), var(--bg)}
+  body{margin:0; font-family:var(--fb); color:var(--hi); -webkit-font-smoothing:antialiased; background:
+    radial-gradient(1100px 640px at 78% -10%, rgba(233,186,79,.09), transparent 62%),
+    radial-gradient(900px 620px at -6% 30%, rgba(99,214,143,.06), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(244,239,224,.014) 0 90px, rgba(0,0,0,0) 90px 180px),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, var(--bg) 100%)}
   .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
 
   .slide{width:100vw; min-height:100vh; scroll-snap-align:start; display:grid; place-items:center; padding:4vh 5vw}
-  .inner{width:min(1180px,100%); aspect-ratio:16/9; background:linear-gradient(180deg,var(--bg2),#080e1a);
-    border:1px solid var(--line); border-radius:18px; padding:clamp(26px,4.4vw,64px);
+  .inner{width:min(1180px,100%); aspect-ratio:16/9;
+    background:linear-gradient(165deg, var(--card) 0%, var(--bg2) 55%, #0A1D12 100%);
+    border:1px solid var(--line-strong); border-radius:20px; padding:clamp(26px,4.4vw,64px);
     display:flex; flex-direction:column; position:relative; overflow:hidden;
-    box-shadow:0 40px 120px -50px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03)}
-  .inner::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
-    background:repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.012) 3px 4px)}
-  .strip{position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--cy),var(--vi))}
+    box-shadow:0 40px 120px -50px rgba(0,0,0,.9), inset 0 1px 0 rgba(244,239,224,.04)}
+  /* halftone dot field, faded from the top-right — matchday programme texture */
+  .inner::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(rgba(244,239,224,.05) 1px, transparent 1.6px);
+    background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(620px 420px at 82% -6%, #000 0%, transparent 74%);
+    mask-image:radial-gradient(620px 420px at 82% -6%, #000 0%, transparent 74%)}
+  /* mowing stripes */
+  .inner::after{content:""; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(90deg, rgba(244,239,224,.015) 0 84px, rgba(0,0,0,0) 84px 168px)}
+  /* pitch-line SVG on the opening + closing slides */
+  section.slide:first-of-type .inner::before, section.slide:last-of-type .inner::before{
+    background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 700' fill='none' stroke='%23F4EFE0' stroke-opacity='.055' stroke-width='1.5'%3E%3Cline x1='600' y1='0' x2='600' y2='700'/%3E%3Ccircle cx='600' cy='350' r='150'/%3E%3Ccircle cx='600' cy='350' r='4' fill='%23E9BA4F' fill-opacity='.25' stroke='none'/%3E%3Crect x='0' y='150' width='180' height='400' rx='2'/%3E%3Crect x='1020' y='150' width='180' height='400' rx='2'/%3E%3C/svg%3E"),
+      radial-gradient(rgba(244,239,224,.05) 1px, transparent 1.6px);
+    background-size:118% auto, 26px 26px; background-position:center 46%, 0 0; background-repeat:no-repeat, repeat;
+    -webkit-mask-image:none; mask-image:none}
+  .strip{position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-br), var(--gold), var(--gold-dk));
+    background-size:220% 100%; animation:sheen 7s linear infinite}
+  @keyframes sheen{from{background-position:0% 0}to{background-position:220% 0}}
 
-  .eyebrow{font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--mid); font-weight:700; display:flex; gap:12px; align-items:center}
-  .eyebrow b{color:var(--cy); font-weight:800}
-  .num{margin-left:auto; color:var(--low); letter-spacing:.1em}
-  h1{font-size:clamp(40px,7vw,98px); line-height:.92; margin:0; font-weight:800; letter-spacing:-.03em; text-wrap:balance}
-  h2{font-size:clamp(26px,3.9vw,52px); line-height:1.02; margin:0; font-weight:800; letter-spacing:-.02em; text-wrap:balance}
-  .lede{font-size:clamp(16px,1.75vw,23px); color:var(--mid); line-height:1.5; max-width:62ch; margin:0}
-  .grad{background:linear-gradient(92deg,var(--cy-br),var(--vi-br)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .eyebrow{font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); font-weight:800; display:flex; gap:12px; align-items:center; font-family:var(--fb)}
+  .eyebrow b{color:var(--gold-br); font-weight:800}
+  .num{margin-left:auto; color:var(--low); letter-spacing:.1em; font-family:var(--mono); font-weight:600; text-transform:none}
+  h1{font-family:var(--fd); font-size:clamp(2.6rem,7vw,5.6rem); line-height:1.02; margin:0; font-weight:700; letter-spacing:-.015em; text-wrap:balance; color:var(--cream)}
+  h2{font-family:var(--fd); font-size:clamp(1.45rem,3.1vw,2.55rem); line-height:1.14; margin:0; font-weight:700; letter-spacing:-.01em; text-wrap:balance; color:var(--cream)}
+  section.slide:last-of-type h2{font-size:clamp(1.9rem,4.2vw,3.3rem) !important}
+  .lede{font-size:clamp(15.5px,1.65vw,20px); color:var(--mid); line-height:1.6; max-width:64ch; margin:0}
+  .grad{background:linear-gradient(94deg, var(--gold-br) 8%, var(--gold) 48%, #D9A038 90%); -webkit-background-clip:text; background-clip:text; color:transparent}
   p{margin:0}
   .push{margin-top:auto}
   .row{display:flex; gap:14px; flex-wrap:wrap}
   .col{display:flex; flex-direction:column; gap:14px}
   .center{justify-content:center; text-align:center; align-items:center}
-  .big{font-size:clamp(20px,2.4vw,30px); font-weight:800; letter-spacing:-.01em; line-height:1.25; text-wrap:balance}
+  .big{font-size:clamp(18px,2.2vw,27px); font-weight:800; letter-spacing:-.01em; line-height:1.35; text-wrap:balance; color:var(--cream)}
   .muted{color:var(--mid)}
 
-  .chip{display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border:1px solid var(--line); border-radius:999px; background:#0b1322; font-size:13px}
-  .chip .k{color:var(--low); text-transform:uppercase; letter-spacing:.14em; font-size:10.5px; font-weight:700; font-family:var(--fd)}
-  .ok{color:var(--win); font-weight:700}
+  .chip{display:inline-flex; align-items:center; gap:9px; padding:8px 15px; border:1px solid var(--line-strong); border-radius:999px;
+    background:rgba(244,239,224,.04); font-size:13px;
+    transition:border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease)}
+  .chip:hover{border-color:rgba(233,186,79,.45); background:rgba(233,186,79,.06)}
+  .chip .k{color:var(--gold); text-transform:uppercase; letter-spacing:.14em; font-size:10.5px; font-weight:800; font-family:var(--fb)}
+  .ok{color:var(--grass); font-weight:700}
+
+  /* gold pill CTA — ink text guarded with !important so generic anchor rules can't wash it out */
+  a.chip.cta{background:linear-gradient(160deg, var(--gold-br), var(--gold) 65%); border-color:transparent;
+    text-decoration:none; box-shadow:0 14px 34px -14px rgba(233,186,79,.55)}
+  a.chip.cta, a.chip.cta:hover, a.chip.cta:focus-visible{color:var(--ink) !important}
+  a.chip.cta .k, a.chip.cta .mono, a.chip.cta:hover .k, a.chip.cta:hover .mono{color:var(--ink) !important}
+  a.chip.cta .k{opacity:.72}
+  a.chip.cta:hover{transform:translateY(-2px) scale(1.02); background:linear-gradient(160deg, var(--gold-br), var(--gold) 65%);
+    box-shadow:0 20px 44px -14px rgba(233,186,79,.7); border-color:transparent}
 
   /* terminal / tool-call motif */
-  .term{width:100%; background:#060a12; border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:var(--mono); font-size:13.5px}
-  .term .bar{display:flex; align-items:center; gap:7px; padding:9px 13px; border-bottom:1px solid var(--line); background:#0a1120; color:var(--low); font-size:11.5px; letter-spacing:.06em}
-  .term .bar i{width:9px; height:9px; border-radius:50%; background:#243247; display:inline-block}
-  .term .body{padding:14px 16px; line-height:1.7}
-  .term .call{color:var(--cy-br)} .term .ret{color:var(--mid)} .term .rec{color:var(--gold-br)}
-  .term .cap{color:var(--vi-br)}
+  .term{width:100%; background:#07120B; border:1px solid var(--line-strong); border-radius:16px; overflow:hidden;
+    font-family:var(--mono); font-size:13.5px; box-shadow:0 30px 70px -36px rgba(0,0,0,.85)}
+  .term .bar{display:flex; align-items:center; gap:7px; padding:10px 15px; border-bottom:1px solid var(--line);
+    background:rgba(244,239,224,.03); color:var(--low); font-size:11px; letter-spacing:.1em}
+  .term .bar i{width:9px; height:9px; border-radius:50%; background:#22301F; display:inline-block}
+  .term .bar i:first-child{background:rgba(233,186,79,.55)}
+  .term .body{padding:15px 17px; line-height:1.75}
+  .term .call{color:var(--cream)} .term .ret{color:var(--mid)} .term .rec{color:var(--gold-br)}
+  .term .cap{color:#5E7362}
 
   .cards{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
   .cards.four{grid-template-columns:repeat(4,1fr)} .cards.three{grid-template-columns:repeat(3,1fr)}
-  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:6px}
-  .card .h{font-weight:800; font-size:15.5px; letter-spacing:-.01em}
-  .card .d{color:var(--mid); font-size:13px; line-height:1.42}
-  .card .kx{font-family:var(--mono); font-size:11.5px; color:var(--cy-br)}
+  .card{background:var(--card2); border:1px solid var(--line); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:6px;
+    transition:transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease)}
+  .card:hover{transform:translateY(-4px); border-color:rgba(233,186,79,.45);
+    box-shadow:0 22px 46px -22px rgba(0,0,0,.7), 0 0 0 1px rgba(233,186,79,.18)}
+  .card .h{font-weight:800; font-size:15.5px; letter-spacing:-.01em; color:var(--cream)}
+  .card .d{color:var(--mid); font-size:13px; line-height:1.5}
+  .card .kx{font-family:var(--mono); font-size:11.5px; color:var(--gold)}
   .tools{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%}
-  .tool{background:#0b1322; border:1px solid var(--line); border-radius:11px; padding:12px 13px}
-  .tool .n{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--cy-br)}
+  .tool{background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px 13px;
+    transition:transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease)}
+  .tool:hover{transform:translateY(-4px); border-color:rgba(233,186,79,.45);
+    box-shadow:0 18px 38px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(233,186,79,.16)}
+  .tool .n{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--cream)}
   .tool .n.paid{color:var(--gold-br)}
-  .tool .g{font-size:11px; color:var(--low); text-transform:uppercase; letter-spacing:.1em; margin-top:3px}
-  .stat{font-family:var(--mono); font-size:clamp(26px,3.6vw,46px); font-weight:700; line-height:1; letter-spacing:-.02em}
-  a{color:var(--cy-br); text-decoration:none}
+  .tool .g{font-size:10.5px; color:var(--grass); text-transform:uppercase; letter-spacing:.12em; margin-top:4px; font-weight:800}
+  .tool:has(.n.paid){background:linear-gradient(150deg, #1B2410 0%, var(--card-gold) 100%); border-color:rgba(233,186,79,.4)}
+  .tool:has(.n.paid):hover{border-color:var(--gold)}
+  .stat{font-family:var(--fd); font-size:clamp(24px,3.2vw,40px); font-weight:700; line-height:1; letter-spacing:-.01em;
+    color:var(--gold-br); font-variant-numeric:tabular-nums}
+  a{color:var(--gold-br); text-decoration:none}
 
   .nav{position:fixed; right:16px; bottom:16px; display:flex; gap:6px; z-index:10}
-  .dot{width:8px; height:8px; border-radius:50%; background:#22304a; border:0; padding:0; cursor:pointer}
-  .dot[aria-current="true"]{background:var(--cy); box-shadow:0 0 10px var(--cy)}
+  .dot{width:8px; height:8px; border-radius:50%; background:rgba(244,239,224,.18); border:0; padding:0; cursor:pointer;
+    transition:background .25s var(--ease), box-shadow .25s var(--ease)}
+  .dot[aria-current="true"]{background:var(--gold); box-shadow:0 0 10px rgba(233,186,79,.8)}
   .hint{position:fixed; left:16px; bottom:14px; color:var(--low); font-size:11.5px; letter-spacing:.08em; z-index:10; font-family:var(--mono)}
+  .progress{position:fixed; top:0; left:0; height:3px; width:0; z-index:20;
+    background:linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-br));
+    box-shadow:0 0 12px rgba(233,186,79,.5); transition:width .5s var(--ease)}
 
-  @media (max-width:820px){ .inner{aspect-ratio:auto; min-height:88vh} .cards,.cards.four,.cards.three,.tools{grid-template-columns:1fr 1fr} h1{font-size:50px} }
+  /* per-slide staggered entrance (screen only — armed by JS via the .js class) */
+  .js .inner > :not(.strip){transition:opacity .65s var(--ease), transform .65s var(--ease)}
+  .js .slide:not(.in) .inner > :not(.strip){opacity:0; transform:translateY(20px)}
+
+  @media (max-width:820px){ .inner{aspect-ratio:auto; min-height:88vh} .cards,.cards.four,.cards.three,.tools{grid-template-columns:1fr 1fr} h1{font-size:44px} }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *, *::before, *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+    .strip{animation:none !important}
+    .progress{transition:none !important}
+    .js .inner > :not(.strip){opacity:1 !important; transform:none !important}
+  }
+
   @media print{
     @page{size:1280px 720px; margin:0}
-    html,body{background:var(--bg)}
-    .nav,.hint{display:none}
+    html,body{background:var(--bg) !important; background-image:none !important}
+    .nav,.hint,.progress{display:none !important}
     .slide{width:1280px; height:720px; min-height:0; padding:22px; page-break-after:always; break-after:page; scroll-snap-align:none}
     .inner{aspect-ratio:auto; height:100%; box-shadow:none}
-    .grad{background:none; -webkit-text-fill-color:#7FF0FF; color:#7FF0FF}
-    *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .grad{background:none; -webkit-text-fill-color:#E9BA4F; color:#E9BA4F}
+    .strip{animation:none !important; background:linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-br))}
+    .card:hover,.tool:hover,.chip:hover{transform:none; box-shadow:none}
+    .js .inner > :not(.strip){opacity:1 !important; transform:none !important; transition:none !important}
+    *{-webkit-print-color-adjust:exact; print-color-adjust:exact; animation:none !important}
   }
 </style>
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
 
 <section class="slide"><div class="inner">
   <div class="strip"></div>
@@ -205,8 +286,8 @@
   <div class="eyebrow">Built &amp; independently verified <span class="num">07</span></div>
   <h2 style="margin-top:16px">Installs live. <span class="grad">Speaks over stdio.</span></h2>
   <div class="row" style="margin-top:22px; gap:26px">
-    <div class="col" style="flex:1"><div class="stat" style="color:var(--win)">63/63</div><div class="muted" style="font-size:13.5px">tests green · typecheck clean · CI on Node 20/22</div></div>
-    <div class="col" style="flex:1"><div class="stat" style="color:var(--cy-br)">8·2·1</div><div class="muted" style="font-size:13.5px">tools·resources·prompt enumerated by MCP Inspector over stdio</div></div>
+    <div class="col" style="flex:1"><div class="stat" style="color:var(--win)"><span data-count="63">63</span>/<span data-count="63">63</span></div><div class="muted" style="font-size:13.5px">tests green · typecheck clean · CI on Node 20/22</div></div>
+    <div class="col" style="flex:1"><div class="stat" style="color:var(--cy-br)"><span data-count="8">8</span>·<span data-count="2">2</span>·<span data-count="1">1</span></div><div class="muted" style="font-size:13.5px">tools·resources·prompt enumerated by MCP Inspector over stdio</div></div>
     <div class="col" style="flex:1"><div class="stat">npm</div><div class="muted" style="font-size:13.5px">publish-ready · provenance CI · 12-file pack, no secrets</div></div>
   </div>
   <div class="push"></div>
@@ -230,7 +311,7 @@
     <div class="body"><span class="call">$ claude mcp add cuporacle -- npx cuporacle-mcp</span></div>
   </div>
   <div class="row center" style="margin-top:24px; gap:12px">
-    <span class="chip"><span class="k">repo</span> <span class="mono">github.com/edycutjong/cuporacle-mcp</span></span>
+    <a class="chip cta" href="https://github.com/edycutjong/cuporacle-mcp"><span class="k">repo</span> <span class="mono">github.com/edycutjong/cuporacle-mcp</span></a>
     <span class="chip"><span class="k">docs</span> <span class="mono">cuporacle.edycu.dev</span></span>
   </div>
   <p class="mono" style="margin-top:22px; color:var(--low); letter-spacing:.12em; font-size:13px">MCP SERVER &nbsp;·&nbsp; x402 &nbsp;·&nbsp; USDC CCTP &nbsp;·&nbsp; AGENT SKILLS</p>
@@ -240,13 +321,90 @@
 <div class="nav" id="nav" aria-hidden="true"></div>
 <div class="hint">↑ ↓ / space to navigate · P to print</div>
 <script>
-  const slides=[...document.querySelectorAll('.slide')], nav=document.getElementById('nav');
-  slides.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.setAttribute('aria-label','Slide '+(i+1));b.onclick=()=>s.scrollIntoView();nav.appendChild(b);});
-  const dots=[...nav.children];
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=slides.indexOf(e.target);dots.forEach((d,j)=>d.setAttribute('aria-current',j===i))}}),{threshold:.55});
-  slides.forEach(s=>io.observe(s));
-  let i=0; const go=n=>{i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView()};
-  addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}else if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}else if(e.key==='p'||e.key==='P'){window.print()}});
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var slides = [].slice.call(document.querySelectorAll(".slide"));
+  var nav = document.getElementById("nav");
+  var bar = document.getElementById("progress");
+
+  slides.forEach(function(s, i){
+    var b = document.createElement("button");
+    b.className = "dot"; b.setAttribute("aria-label", "Slide " + (i + 1));
+    b.onclick = function(){ s.scrollIntoView(); };
+    nav.appendChild(b);
+  });
+  var dots = [].slice.call(nav.children);
+
+  var cur = 0;
+  function setCurrent(i){
+    cur = i;
+    dots.forEach(function(d, j){ d.setAttribute("aria-current", j === i ? "true" : "false"); });
+    if (bar) bar.style.width = (((i + 1) / slides.length) * 100) + "%";
+  }
+
+  /* count-up on stat numbers */
+  function countUp(el){
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    if (reduced) { el.textContent = target; return; }
+    var t0 = null, dur = 900;
+    function tick(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* staggered per-slide entrance reveal */
+  function revealSlide(s){
+    if (s.classList.contains("in")) return;
+    var kids = [].slice.call(s.querySelectorAll(":scope > .inner > *")).filter(function(el){
+      return !el.classList.contains("strip");
+    });
+    kids.forEach(function(el, k){ el.style.transitionDelay = (reduced ? 0 : k * 90) + "ms"; });
+    s.classList.add("in");
+    [].slice.call(s.querySelectorAll("[data-count]")).forEach(countUp);
+  }
+
+  if ("IntersectionObserver" in window && !reduced) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var i = slides.indexOf(e.target);
+        setCurrent(i);
+        revealSlide(e.target);
+      });
+    }, { threshold: .55 });
+    slides.forEach(function(s){ io.observe(s); });
+  } else {
+    slides.forEach(function(s){ s.classList.add("in"); });
+    [].slice.call(document.querySelectorAll("[data-count]")).forEach(function(el){
+      el.textContent = el.getAttribute("data-count");
+    });
+    setCurrent(0);
+  }
+
+  function go(n){
+    var i = Math.max(0, Math.min(slides.length - 1, n));
+    slides[i].scrollIntoView();
+  }
+  addEventListener("keydown", function(e){
+    if (["ArrowDown","ArrowRight","PageDown"," "].indexOf(e.key) > -1) { e.preventDefault(); go(cur + 1); }
+    else if (["ArrowUp","ArrowLeft","PageUp"].indexOf(e.key) > -1) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === "p" || e.key === "P") { window.print(); }
+  });
+
+  /* print safety: everything visible, counters at final values */
+  addEventListener("beforeprint", function(){
+    slides.forEach(function(s){ s.classList.add("in"); });
+    [].slice.call(document.querySelectorAll("[data-count]")).forEach(function(el){
+      el.textContent = el.getAttribute("data-count");
+    });
+  });
+})();
 </script>
 
 </body>
