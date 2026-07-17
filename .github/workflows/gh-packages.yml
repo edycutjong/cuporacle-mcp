@@ -1,0 +1,42 @@
+name: Publish to GitHub Packages
+
+# Publishes a scoped mirror (@edycutjong/cuporacle-mcp) to GitHub's npm registry
+# so the package shows up in the repo's "Packages" sidebar. Uses the built-in
+# GITHUB_TOKEN — independent of the npmjs.org publish (which needs NPM_TOKEN).
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish-ghp:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'edycutjong' }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          registry-url: "https://npm.pkg.github.com"
+      - run: npm ci
+      - run: npm run build
+      - name: Scope package name for GitHub Packages
+        run: npm pkg set name="@edycutjong/cuporacle-mcp"
+      - name: Skip if version already published
+        id: guard
+        run: |
+          V=$(node -p "require('./package.json').version")
+          if npm view "@edycutjong/cuporacle-mcp@$V" version >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "@edycutjong/cuporacle-mcp@$V already on GitHub Packages — nothing to do"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish
+        if: steps.guard.outputs.skip != 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

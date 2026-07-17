@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-  workflow_dispatch: # manual trigger for the provenance publish job
+  workflow_dispatch:
 
 # Cancel superseded runs for the same branch / PR (saves CI minutes).
 concurrency:
@@ -147,26 +147,3 @@ jobs:
         continue-on-error: true # informational; a token is only needed for a real publish
       - name: Summary
         run: echo "✅ Package is publish-ready (dry-run only — nothing published)."
-
-  # Publish is a manual, opt-in job. Run it from the Actions tab on a tagged
-  # release. It publishes with npm provenance (OIDC) so the registry page shows
-  # the verified-build badge. Requires NPM_TOKEN with publish rights.
-  publish:
-    name: publish (manual)
-    if: github.event_name == 'workflow_dispatch'
-    needs: [build, mcp-conformance]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write # required for npm provenance
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
