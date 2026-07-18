@@ -78,10 +78,13 @@ keylessly via Injective's x402.
   npm test           # 63 vitest (schemas · spend cap · 402-parse · EIP-3009 sign · receipts · degrade)
   npm run inspector  # official MCP Inspector conformance against the built dist/
   ```
-- **Honestly gated (not faked):** a *real settled* `wc_edge` payment needs a few
-  cents of USDC on Injective (funding is user-gated) plus the live LineLock
-  upstream. Until then `wc_edge` **degrades to free odds** and never invents an
-  edge or a receipt — full honest state in [`STATUS.md`](docs/STATUS.md).
+- **Honestly gated (not faked) — and now proven for real:** on **2026-07-18** the
+  agent made its first *real settled* `wc_edge` purchase against the live LineLock
+  API — 0.05 USDC on Injective EVM mainnet, receipt tx
+  [`0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d`](https://blockscout.injective.network/tx/0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d).
+  Verify it yourself: `receipt_verify("0x89cd…")`. With **zero funds**, `dry_run`
+  remains the reproduce path, and `wc_edge` still **degrades to free odds** —
+  never an invented edge or receipt — full honest state in [`STATUS.md`](docs/STATUS.md).
 
 ---
 
@@ -161,7 +164,9 @@ claude mcp add cuporacle \
 The assistant lists the fixture (`wc_fixtures`), pulls odds (`wc_odds`), buys a
 vetted edge for ~5¢ (`wc_edge`) **paying via x402 itself**, and cites the
 receipt. Paste that hash into `receipt_verify` to confirm the payment on Injective.
-*(Funded path — with no funds, `wc_edge` dry-runs or degrades to free odds and says so.)*
+*(Funded path — now exercised for real: first settled receipt `0x89cd955c…541a07d`
+on 2026-07-18, see "Notes for judges". With no funds, `wc_edge` dry-runs or
+degrades to free odds and says so.)*
 
 ## 🛠️ Injective technologies used
 

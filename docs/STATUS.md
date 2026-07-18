@@ -48,28 +48,36 @@ npx tsx scripts/paid-call-smoke.ts 537387       # refuses to spend → prints a 
   of the client while the wallet is unfunded.
 - All 4 free tools return real data with the keys already in `.env.local`.
 
-## ⛔ Blocked on funding (real mainnet `wc_edge` payment)
+## ✅ Real mainnet `wc_edge` payment — **DONE 2026-07-18** (was: blocked on funding)
 
-Wallet `0x95DdED219bD3d763A184eB4187056b9F238aAaA2` holds **13 USDC on Base** but
-**0 INJ gas / 0 Base ETH / 0 USDC on Injective** (user funding separately — not
-done). So a **real settled `wc_edge` tx cannot be produced yet.**
+The wallet was funded and the paid path executed **for real**:
 
-- **What's ready:** the entire client path (`paidFetch` → quote → cap → sign →
-  retry → parse `PAYMENT-RESPONSE`) is coded and unit-tested against a stubbed
-  transport. `scripts/paid-call-smoke.ts` runs it for real behind
-  `CUPORACLE_ALLOW_PAID=1`.
-- **Unblock:** CCTP USDC (a few cents) onto Injective mainnet + a little INJ →
-  run `CUPORACLE_ALLOW_PAID=1 LINELOCK_URL=<live> npm run paid-call-smoke`. The
-  returned `receipt_tx` then verifies via `receipt_verify` + Blockscout.
-- Prefer testnet `eip155:1439` for a live handshake before spending mainnet cents.
-- **Not faked:** no receipt hash in the repo is presented as a real settlement.
-  `fixtures/edge-success.json` uses an all-zero placeholder tx, only for shape
-  tests, and `wc_edge` only ever cites a receipt returned by a genuine paid call.
+- **CCTP funding executed** (the exact runbook `wallet_fund_guide` teaches):
+  burn 2 USDC on Base
+  `0x66ce1116e75f780e60259e394304e86f7565b52276f9d49e4c7fc66209427b37` →
+  mint on Injective
+  `0xd757a98d6abb3e760898fc8c30447f6a8b86d35c0745db4f474ea56d3c4464ac`.
+- **Real settled paid call:** `CUPORACLE_ALLOW_PAID=1 npm run paid-call-smoke`
+  against the **live LineLock API** (`api.linelock.edycu.dev`) — `wc_edge`
+  (match #537387) paid **0.05 USDC** on Injective EVM mainnet (`eip155:1776`),
+  end-to-end **3463ms**, under the 0.50 USDC session cap. Payer
+  `0x95DdED219bD3d763A184eB4187056b9F238aAaA2`.
+- **Receipt tx:**
+  [`0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d`](https://blockscout.injective.network/tx/0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d)
+  — verify with `receipt_verify("0x89cd…")` or on Blockscout.
+- **Not faked (unchanged):** `fixtures/edge-success.json` still uses an all-zero
+  placeholder tx, only for shape tests; `wc_edge` only ever cites a receipt
+  returned by a genuine paid call. The `dry_run` path and honest degrade remain
+  unchanged and are still the zero-funds path for unfunded users.
 
-## ⛔ Blocked on LineLock (live upstream swap)
+## ✅ LineLock upstream — LIVE (was: blocked on live upstream swap)
+
+**UPDATE 2026-07-18:** the settled paid call above ran against the live
+`https://api.linelock.edycu.dev` — the swap happened and the contract held.
+Original blocked state kept below for the record:
 
 `wc_edge`'s only external dependency is LineLock's `POST /api/edge`, built in
-parallel and not yet frozen/live.
+parallel and (at the 2026-07-12 build session) not yet frozen/live.
 
 - **What's ready:** the client codes to the agreed contract (`{ fixture,
   kickoff_utc, model_prob, market_odds, edge_pct, ladder[], similar_settled[],
@@ -77,8 +85,8 @@ parallel and not yet frozen/live.
   `fixtures/edge-402-quote.json` + `fixtures/edge-success.json`.
 - **Unblock:** set `LINELOCK_URL=https://<live-linelock>` — a one-line swap. If
   the real shape differs, it's a fixture update, not a code change.
-- Until then, `wc_edge` (non-dry-run) **degrades** to free `wc_odds` + "no vetted
-  edge available", recorded as a `degraded` ledger entry.
+- If the upstream is ever down, `wc_edge` (non-dry-run) still **degrades** to free
+  `wc_odds` + "no vetted edge available", recorded as a `degraded` ledger entry.
 
 ## Deferred / not in this session
 
@@ -92,7 +100,8 @@ parallel and not yet frozen/live.
 - [x] 4 free data tools return real World Cup data.
 - [x] `wc_edge` parses the recorded 402 quote, enforces the cap, cites the receipt
       from `PAYMENT-RESPONSE` (client path), graceful `INSUFFICIENT_USDC`/degrade.
-      No live payment (funds-gated).
+      ~~No live payment (funds-gated)~~ **live payment SETTLED 2026-07-18** —
+      receipt `0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d`.
 - [x] `receipt_verify` + `wc_spend_ledger` implemented; typed errors in place.
 - [x] 63 vitest passing (target ~35); MCP Inspector conformance runs.
 - [x] `SKILL.md`, README tech section, `DEMO.md`, and this `STATUS.md`.

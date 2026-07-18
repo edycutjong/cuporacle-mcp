@@ -471,6 +471,7 @@
             <li>Spend cap enforced per call and per session (default 0.50 USDC) — the agent never raises its own cap</li>
             <li><code class="mono">dry_run: true</code> proves the whole payment client with zero funds — no money moved, no fabricated receipt</li>
             <li>Upstream down? Degrades to free odds — never invents an edge</li>
+            <li><b>First real settled receipt (2026-07-18):</b> 0.05 USDC on mainnet — <a class="u" href="https://blockscout.injective.network/tx/0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d"><code class="mono">0x89cd955c…541a07d</code></a></li>
           </ul>
         </article>
 
@@ -632,7 +633,7 @@ cd cuporacle-mcp &amp;&amp; npm install &amp;&amp; npm run smoke</pre>
         <h3>Honestly gated — not faked</h3>
         <ol>
           <li>The x402 buyer path runs with <b>zero funds</b>: <span class="mono">wc_edge(matchId, dry_run: true)</span> parses the recorded 402 quote, enforces the spend cap and signs the EIP-3009 authorization locally — <b>no money moved and no fabricated receipt</b>.</li>
-          <li>A <b>real settled</b> payment needs a few cents of USDC on Injective (funding is user-gated) plus the live LineLock upstream (a disclosed sibling project). If it's down, <span class="mono">wc_edge</span> <b>degrades to free odds — it never fabricates an edge</b>.</li>
+          <li>A <b>real settled</b> payment needs a few cents of USDC on Injective (funding is user-gated) plus the live LineLock upstream (a disclosed sibling project) — and the first one now <b>exists</b> (settled 2026-07-18): receipt <a class="u" href="https://blockscout.injective.network/tx/0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d"><span class="mono">0x89cd955c…541a07d</span></a>. If the upstream is down, <span class="mono">wc_edge</span> <b>degrades to free odds — it never fabricates an edge</b>.</li>
           <li>Free-tier data APIs cap request rates → 60s cache + committed snapshots, <b>always labeled <span class="mono">[snapshot]</span></b> (including the ticker above).</li>
           <li>The payer keystore holds a real (tiny) balance. Spend caps default low; <b>fund only cents</b>. Windows keystore paths are documented, not hardened.</li>
         </ol>
@@ -691,7 +692,7 @@ cd cuporacle-mcp &amp;&amp; npm install &amp;&amp; npm run smoke</pre>
           <h3 style="margin:0"><button type="button" aria-expanded="false" aria-controls="a6" id="q6">Do I need real money to try it?
             <span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span></button></h3>
           <div class="a" id="a6" role="region" aria-labelledby="q6"><div>
-            <p>No. The four data tools are free, and <code>wc_edge(matchId, dry_run: true)</code> proves the whole payment client — 402 parse, cap gate, local EIP-3009 signature — with <b>zero funds, no money moved and no fabricated receipt</b>. A real settled call costs about 5¢ and needs a few cents of USDC you fund deliberately; the default session cap is 0.50 USDC.</p>
+            <p>No. The four data tools are free, and <code>wc_edge(matchId, dry_run: true)</code> proves the whole payment client — 402 parse, cap gate, local EIP-3009 signature — with <b>zero funds, no money moved and no fabricated receipt</b>. A real settled call costs about 5¢ and needs a few cents of USDC you fund deliberately; the default session cap is 0.50 USDC. The funded path has been exercised for real — first settled receipt <a class="u" href="https://blockscout.injective.network/tx/0x89cd955cf4cab5efcb7a25cbc8e25851c8524a186f2aa449d11e4b598541a07d"><code>0x89cd955c…541a07d</code></a> (2026-07-18).</p>
           </div></div>
         </div>
 
