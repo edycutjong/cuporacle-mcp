@@ -152,8 +152,8 @@ npm run inspector                            # official MCP Inspector: tools/lis
 These are deliberately **not** faked in the docs. Fill each in before submitting:
 
 - [x] **Demo video** — DONE: **https://youtu.be/FAI3_xZFTx0** (2:10 zero-funds cut — dry-run magic moment, SPEND_CAP_HIT governance, live Final data).
-- [ ] **npm publish** — `cuporacle-mcp` is publish-*ready* (`npm run build` + provenance CI) but **not yet published**; the `npx cuporacle-mcp` line goes live on publish.
-- [ ] **Docs site deploy** — `docs/index.html` is static and **not yet deployed**; any `cuporacle.edycu.dev` link is a TODO until it is.
+- [x] **npm publish** — DONE 2026-07-17: **`cuporacle-mcp@1.0.0` is live on npm** (https://www.npmjs.com/package/cuporacle-mcp); `npx -y cuporacle-mcp` works.
+- [x] **Docs site deploy** — DONE: **live at https://cuporacle.edycu.dev/** (plus `/pitch/` and `/reference.html`).
 - [ ] **Live settled receipt** — funds-gated (CCTP a few cents onto Injective + live LineLock). Optional for a strong submission; the dry-run proves the client.
 - [ ] **Two X-post links** (intro + demo video) for the Typeform — video is live (https://youtu.be/FAI3_xZFTx0); posts still to publish.
 

@@ -161,6 +161,7 @@ claude mcp add cuporacle \
 The assistant lists the fixture (`wc_fixtures`), pulls odds (`wc_odds`), buys a
 vetted edge for ~5¢ (`wc_edge`) **paying via x402 itself**, and cites the
 receipt. Paste that hash into `receipt_verify` to confirm the payment on Injective.
+*(Funded path — with no funds, `wc_edge` dry-runs or degrades to free odds and says so.)*
 
 ## 🛠️ Injective technologies used
 
