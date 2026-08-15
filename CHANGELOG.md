@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/edycutjong/cuporacle-mcp/compare/v1.1.0...v1.1.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **deps:** resolve 8 dependency vulnerabilities via lockfile ([b7b8ae9](https://github.com/edycutjong/cuporacle-mcp/commit/b7b8ae956fd79760773164f6904c7583341a3710))
+
 # [1.1.0](https://github.com/edycutjong/cuporacle-mcp/compare/v1.0.0...v1.1.0) (2026-07-17)
 
 
